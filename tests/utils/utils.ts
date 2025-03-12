@@ -2,7 +2,6 @@ import fs from "fs";
 import path from "path";
 import type { RuleTester } from "eslint";
 import { fileURLToPath } from "url";
-import { createRequire } from "module";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 /**
@@ -55,17 +54,17 @@ function getMinIndent(lines: string[]) {
 /**
  * Load test cases
  */
-export function loadTestCases(
+export async function loadTestCases(
   ruleName: string,
   _options?: any,
   additionals?: {
     valid?: (RuleTester.ValidTestCase | string)[];
     invalid?: RuleTester.InvalidTestCase[];
   },
-): {
+): Promise<{
   valid: RuleTester.ValidTestCase[];
   invalid: RuleTester.InvalidTestCase[];
-} {
+}> {
   const validFixtureRoot = path.resolve(
     dirname,
     `../fixtures/rules/${ruleName}/valid/`,
@@ -75,12 +74,12 @@ export function loadTestCases(
     `../fixtures/rules/${ruleName}/invalid/`,
   );
 
-  const valid = listupInput(validFixtureRoot).map((inputFile) =>
-    getConfig(inputFile),
+  const valid = await Promise.all(
+    listupInput(validFixtureRoot).map((inputFile) => getConfig(inputFile)),
   );
 
-  const invalid = listupInput(invalidFixtureRoot).map((inputFile) =>
-    getConfig(inputFile),
+  const invalid = await Promise.all(
+    listupInput(invalidFixtureRoot).map((inputFile) => getConfig(inputFile)),
   );
 
   if (additionals) {
@@ -126,7 +125,7 @@ function* itrListupInput(rootDir: string): IterableIterator<string> {
   }
 }
 
-function getConfig(inputFile: string) {
+async function getConfig(inputFile: string) {
   const filename = path.relative(process.cwd(), inputFile);
   const code0 = fs.readFileSync(inputFile, "utf8");
   let code, config;
@@ -142,7 +141,7 @@ function getConfig(inputFile: string) {
   }
   if (config && typeof config === "object") {
     code = `/* ${filename} */\n${code0}`;
-    return { ...adjustConfig(config), code, filename };
+    return { ...(await adjustConfig(config)), code, filename };
   }
   // inline config
   const configStr = /^\/\*(.*?)\*\//u.exec(code0);
@@ -157,10 +156,10 @@ function getConfig(inputFile: string) {
     }
   }
 
-  return { ...adjustConfig(config), code, filename };
+  return { ...(await adjustConfig(config)), code, filename };
 }
 
-function adjustConfig(config: Record<string, unknown>): any {
+async function adjustConfig(config: Record<string, unknown>): Promise<any> {
   if (
     typeof config.languageOptions !== "object" ||
     !config.languageOptions ||
@@ -175,12 +174,7 @@ function adjustConfig(config: Record<string, unknown>): any {
     ...config,
     languageOptions: {
       ...config.languageOptions,
-      parser: resolveParser(parser),
+      parser: await import(parser).then((m) => m.default || m),
     },
   };
-}
-
-function resolveParser(parser: string) {
-  const resolved = createRequire(import.meta.url)(parser);
-  return resolved;
 }

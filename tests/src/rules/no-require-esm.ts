@@ -4,4 +4,8 @@ import { loadTestCases } from "../../utils/utils.js";
 
 const tester = new SnapshotRuleTester();
 
-tester.run("no-require-esm", rule as any, loadTestCases("no-require-esm"));
+tester.run(
+  "no-require-esm",
+  rule as any,
+  await loadTestCases("no-require-esm"),
+);

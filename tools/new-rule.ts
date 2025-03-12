@@ -71,7 +71,7 @@ import { loadTestCases } from "../../utils/utils.js"
 
 const tester = new SnapshotRuleTester()
 
-tester.run("${ruleId}", rule as any, loadTestCases("${ruleId}"))
+tester.run("${ruleId}", rule as any, await loadTestCases("${ruleId}"))
 `,
   );
   fs.writeFileSync(

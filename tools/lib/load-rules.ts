@@ -10,7 +10,7 @@ const dirname = path.dirname(fileURLToPath(import.meta.url));
  * @returns {Array} The all rules
  */
 async function readRules() {
-  const rules: RuleModule[] = [];
+  const rules: Promise<RuleModule>[] = [];
   const rulesLibRoot = path.resolve(dirname, "../../src/rules");
   for (const name of fs
     .readdirSync(rulesLibRoot)
@@ -18,16 +18,17 @@ async function readRules() {
     const ruleName = name.replace(/\.ts$/u, "");
     const ruleId = `module-interop/${ruleName}`;
 
-    const rule = await import(path.join(rulesLibRoot, name)).then(
-      (m) => m.default || m,
+    rules.push(
+      import(path.join(rulesLibRoot, name))
+        .then((m) => m.default || m)
+        .then((rule) => {
+          rule.meta.docs.ruleName = ruleName;
+          rule.meta.docs.ruleId = ruleId;
+          return rule;
+        }),
     );
-
-    rule.meta.docs.ruleName = ruleName;
-    rule.meta.docs.ruleId = ruleId;
-
-    rules.push(rule);
   }
-  return rules;
+  return Promise.all(rules);
 }
 
 export const rules = await readRules();
