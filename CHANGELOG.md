@@ -1,5 +1,11 @@
 # eslint-plugin-module-interop
 
+## 0.2.1
+
+### Patch Changes
+
+- [#14](https://github.com/ota-meshi/eslint-plugin-module-interop/pull/14) [`bf6e935`](https://github.com/ota-meshi/eslint-plugin-module-interop/commit/bf6e9353428a34e1a150cda1baa5aac9c58bc65b) Thanks [@ota-meshi](https://github.com/ota-meshi)! - fix(no-require-esm): false positive for type import
+
 ## 0.2.0
 
 ### Minor Changes
