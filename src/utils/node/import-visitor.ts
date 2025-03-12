@@ -57,9 +57,6 @@ export function defineImportVisitor(
       addTarget(node);
     },
     ImportDeclaration(node) {
-      if (node.source?.value == null) {
-        return;
-      }
       if (
         ignoreTypeImport &&
         (node.importKind === "type" ||
@@ -70,16 +67,13 @@ export function defineImportVisitor(
                 specifier.importKind === "type",
             )))
       ) {
+        // Ignore type imports.
         return;
       }
 
       addTarget(node);
     },
     ImportExpression(node) {
-      if (node.source?.type !== "Literal") {
-        return;
-      }
-
       addTarget(node);
     },
 
