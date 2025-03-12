@@ -46,6 +46,19 @@ function detectModuleTypeForPackageJson(
   function detectModuleTypeForExports(
     exports: JsonValue | undefined,
   ): ModuleType | null {
+    if (typeof exports === "string") {
+      const ext = path.extname(exports);
+      const extType = detectModuleTypeForExt(ext);
+      if (extType) {
+        return extType;
+      } else if (ext === ".js") {
+        const typeModuleType = detectModuleTypeForPackageType(type);
+        if (typeModuleType) {
+          return typeModuleType;
+        }
+      }
+      return null;
+    }
     if (typeof exports !== "object" || !exports) return null;
     let esm = false;
     let cjs = false;
@@ -55,23 +68,12 @@ function detectModuleTypeForPackageJson(
         entryType = "esm";
       } else if (key === "require") {
         entryType = "cjs";
-      } else if (typeof value !== "string") {
+      } else {
         const nestType = detectModuleTypeForExports(value);
         if (nestType === "cjs" || nestType === "esm") {
           entryType = nestType;
         } else if (nestType === "dual") {
           return "dual";
-        }
-      } else if (key === "default" || key === "node") {
-        const ext = path.extname(value);
-        const extType = detectModuleTypeForExt(ext);
-        if (extType === "cjs" || extType === "esm") {
-          entryType = extType;
-        } else if (ext === ".js") {
-          const typeModuleType = detectModuleTypeForPackageType(type);
-          if (typeModuleType) {
-            entryType = typeModuleType;
-          }
         }
       }
       if (entryType === "esm") {
