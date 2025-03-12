@@ -39,7 +39,7 @@ bower_components
 build/Release
 
 # Dependency directories
-node_modules/
+/node_modules/
 jspm_packages/
 
 # Snowpack dependency directory (https://snowpack.dev/)
@@ -128,3 +128,14 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# Repo
+/typings/eslint/lib
+/lib
+
+# docs
+/docs/assets
+/docs/**/*.html
+/docs/.vitepress/.temp
+/docs/.vitepress/cache
+/docs/.vitepress/build-system/shim

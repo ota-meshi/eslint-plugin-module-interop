@@ -1,0 +1,66 @@
+# eslint-snapshot-rule-tester format: v1
+
+
+Test: no-import-cjs >> invalid
+Filename: tests/fixtures/rules/no-import-cjs/invalid/node-modules-commonjs/src-input.mjs
+
+Code:
+  1 | /* tests/fixtures/rules/no-import-cjs/invalid/node-modules-commonjs/src-input.mjs */
+  2 | import * as foo from "cjs";
+    |                      ^~~~~ [1]
+  3 |
+
+[1] Importing CommonJS modules using `import` is forbidden.
+---
+
+
+Test: no-import-cjs >> invalid
+Filename: tests/fixtures/rules/no-import-cjs/invalid/node-modules-commonjs2/src-input.mjs
+
+Code:
+  1 | /* tests/fixtures/rules/no-import-cjs/invalid/node-modules-commonjs2/src-input.mjs */
+  2 | import * as foo from "cjs2";
+    |                      ^~~~~~ [1]
+  3 |
+
+[1] Importing CommonJS modules using `import` is forbidden.
+---
+
+
+Test: no-import-cjs >> invalid
+Filename: tests/fixtures/rules/no-import-cjs/invalid/type-commonjs/src-input.mjs
+
+Code:
+  1 | /* tests/fixtures/rules/no-import-cjs/invalid/type-commonjs/src-input.mjs */
+  2 | import * as foo from "./target.js";
+    |                      ^~~~~~~~~~~~~ [1]
+  3 |
+
+[1] Importing CommonJS modules using `import` is forbidden.
+---
+
+
+Test: no-import-cjs >> invalid
+Filename: tests/fixtures/rules/no-import-cjs/invalid/type-default/src-input.mjs
+
+Code:
+  1 | /* tests/fixtures/rules/no-import-cjs/invalid/type-default/src-input.mjs */
+  2 | import * as foo from "./target.js";
+    |                      ^~~~~~~~~~~~~ [1]
+  3 |
+
+[1] Importing CommonJS modules using `import` is forbidden.
+---
+
+
+Test: no-import-cjs >> invalid
+Filename: tests/fixtures/rules/no-import-cjs/invalid/type-module/src-input.mjs
+
+Code:
+  1 | /* tests/fixtures/rules/no-import-cjs/invalid/type-module/src-input.mjs */
+  2 | import * as foo from "./target.cjs";
+    |                      ^~~~~~~~~~~~~~ [1]
+  3 |
+
+[1] Importing CommonJS modules using `import` is forbidden.
+---
