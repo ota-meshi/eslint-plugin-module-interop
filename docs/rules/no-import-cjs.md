@@ -3,13 +3,12 @@ pageClass: "rule-details"
 sidebarDepth: 0
 title: "module-interop/no-import-cjs"
 description: "disallow importing CommonJS modules"
+since: "v0.1.0"
 ---
 
 # module-interop/no-import-cjs
 
 > disallow importing CommonJS modules
-
-- ❗ <badge text="This rule has not been released yet." vertical="middle" type="error"> **_This rule has not been released yet._** </badge>
 
 ## 📖 Rule Details
 
@@ -36,6 +35,10 @@ Nothing.
 - [module-interop/no-require-esm]
 
 [module-interop/no-require-esm]: ./no-require-esm.md
+
+## 🚀 Version
+
+This rule was introduced in eslint-plugin-module-interop v0.1.0
 
 ## 🔍 Implementation
 
