@@ -30,7 +30,7 @@ const tsConfigMapping = {
   preserve: PRESERVE_MAPPING, // Emit .jsx files with the JSX unchanged
 };
 
-type ExtensionMap = {
+export type TypescriptExtensionMap = {
   /**  Convert from typescript to javascript */
   forward: Record<string, string>;
   /** Convert from javascript to typescript */
@@ -40,7 +40,9 @@ type ExtensionMap = {
 /**
  * @param typescriptExtensionMap A forward extension mapping
  */
-function normalize(typescriptExtensionMap: [string, string][]): ExtensionMap {
+function normalize(
+  typescriptExtensionMap: [string, string][],
+): TypescriptExtensionMap {
   const forward: Record<string, string> = {};
 
   const backward: Record<string, string[]> = {};
@@ -65,7 +67,7 @@ function normalize(typescriptExtensionMap: [string, string][]): ExtensionMap {
  */
 function getMappingFromTSConfig(
   tsconfig?: TsConfigJsonResolved,
-): ExtensionMap | null {
+): TypescriptExtensionMap | null {
   const jsx = tsconfig?.compilerOptions?.jsx;
 
   if (jsx != null && {}.hasOwnProperty.call(tsConfigMapping, jsx)) {
@@ -81,7 +83,7 @@ function getMappingFromTSConfig(
  * @param option - An option object to get.
  * @returns The `typescriptExtensionMap` value, or `null`.
  */
-function get(option: unknown): ExtensionMap | null {
+function get(option: unknown): TypescriptExtensionMap | null {
   if (typeof option !== "object" || option === null) {
     return null;
   }
@@ -117,7 +119,7 @@ function get(option: unknown): ExtensionMap | null {
  */
 function getFromTSConfigFromFile(
   context: Rule.RuleContext,
-): ExtensionMap | null {
+): TypescriptExtensionMap | null {
   return getMappingFromTSConfig(getTSConfigForContext(context)?.config);
 }
 
@@ -127,8 +129,8 @@ function getFromTSConfigFromFile(
  * 1. This checks `options.typescriptExtensionMap`, if its an array then it gets returned.
  * 2. This checks `options.typescriptExtensionMap`, if its a string, convert to the correct mapping.
  * 3. This checks `settings.n.typescriptExtensionMap`, if its an array then it gets returned.
- * 4. This checks `settings.node.typescriptExtensionMap`, if its an array then it gets returned.
- * 5. This checks `settings.n.typescriptExtensionMap`, if its a string, convert to the correct mapping.
+ * 4. This checks `settings.n.typescriptExtensionMap`, if its a string, convert to the correct mapping.
+ * 5. This checks `settings.node.typescriptExtensionMap`, if its an array then it gets returned.
  * 6. This checks `settings.node.typescriptExtensionMap`, if its a string, convert to the correct mapping.
  * 7. This checks for a `tsconfig.json` `config.compilerOptions.jsx` property, if its a string, convert to the correct mapping.
  * 8. This returns `PRESERVE_MAPPING`.
@@ -138,10 +140,12 @@ function getFromTSConfigFromFile(
  */
 export function getTypescriptExtensionMap(
   context: Rule.RuleContext,
-): ExtensionMap {
+  optionIndex = 0,
+): TypescriptExtensionMap {
   return (
-    get(context.options?.[0]) ||
-    get(context.settings?.n ?? context.settings?.node) ||
+    get(context.options?.[optionIndex]) ||
+    get(context.settings?.n) ||
+    get(context.settings?.node) ||
     getFromTSConfigFromFile(context) ||
     PRESERVE_MAPPING
   );

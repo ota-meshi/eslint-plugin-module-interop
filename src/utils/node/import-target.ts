@@ -8,6 +8,7 @@ import { getTSConfigForContext } from "./get-tsconfig.js";
 import { isBuiltin } from "node:module";
 import { isTypescript } from "./is-typescript.js";
 import path from "node:path";
+import type { TypescriptExtensionMap } from "./config/get-typescript-extension-map.js";
 import { getTypescriptExtensionMap } from "./config/get-typescript-extension-map.js";
 import resolver from "enhanced-resolve";
 import { getResolvePaths } from "./config/get-resolve-paths.js";
@@ -56,27 +57,38 @@ function getTSConfigAliases(
 }
 
 export type Options = {
-  extensions?: string[];
-  paths?: string[];
-  resolverConfig?: Partial<ResolveOptions>;
+  extensions: string[];
+  paths: string[];
+  resolverConfig: Partial<ResolveOptions>;
+  typescriptExtensionMap: TypescriptExtensionMap;
 };
 
 /**
  * Get the options for the ImportTarget.
  */
-export function resolveOptions(context: Rule.RuleContext): Options {
+export function resolveOptions(
+  context: Rule.RuleContext,
+  optionIndex = 0,
+): Options {
   let paths: string[] | undefined,
     extensions: string[] | undefined,
-    resolverConfig: Partial<ResolveOptions> | undefined;
+    resolverConfig: Partial<ResolveOptions> | undefined,
+    typescriptExtensionMap: TypescriptExtensionMap | undefined;
   return {
     get paths() {
-      return (paths ??= getResolvePaths(context));
+      return (paths ??= getResolvePaths(context, optionIndex));
     },
     get extensions() {
-      return (extensions ??= getTryExtensions(context));
+      return (extensions ??= getTryExtensions(context, optionIndex));
     },
     get resolverConfig() {
-      return (resolverConfig ??= getResolverConfig(context));
+      return (resolverConfig ??= getResolverConfig(context, optionIndex));
+    },
+    get typescriptExtensionMap() {
+      return (typescriptExtensionMap ??= getTypescriptExtensionMap(
+        context,
+        optionIndex,
+      ));
     },
   };
 }
@@ -369,8 +381,7 @@ function resolveFilePath({
 
   if (isTypescript(context)) {
     baseResolverConfig.alias = getTSConfigAliases(context);
-    baseResolverConfig.extensionAlias =
-      getTypescriptExtensionMap(context).backward;
+    baseResolverConfig.extensionAlias = options.typescriptExtensionMap.backward;
   }
 
   Object.assign(baseResolverConfig, options.resolverConfig);
