@@ -12,7 +12,10 @@ since: "v0.1.0"
 
 ## 📖 Rule Details
 
-This rule reports `require` calls of ES module files.
+This rule reports `require()` calls of ES module files.
+
+`require(esm)` is now supported without the feature flag in Node.js v22.13.0, but is not available in earlier versions.\
+You can use this rule to check backward compatibility with Node.js by disallowing `require(esm)`.
 
 <!-- eslint-skip -->
 
@@ -29,6 +32,12 @@ require('./my-module.mjs');
 ## 🔧 Options
 
 Nothing.
+
+## 📚 Further reading
+
+- [Node.js documentation - Loading ECMAScript modules using `require()`]
+
+[Node.js documentation - Loading ECMAScript modules using `require()`]: https://nodejs.org/api/modules.html#loading-ecmascript-modules-using-require
 
 ## 👫 Related rules
 

@@ -14,6 +14,9 @@ since: "v0.1.0"
 
 This rule reports ES module imports of CommonJS modules.
 
+Although it is possible to ESM import CommonJS modules due to module interoperability across bundlers and runtimes, their behavior may not be consistent.\
+To avoid issues due to these differences, it is safe to ESM import only ESMs.
+
 <!-- eslint-skip -->
 
 ```js
