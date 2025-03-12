@@ -83,6 +83,15 @@ export default [
     },
   },
   {
+    files: ["playground/**/*.{js,mjs,cjs}"],
+    rules: {
+      "no-undef": "off",
+      "no-unused-vars": "off",
+      "n/no-unpublished-import": "off",
+      "n/no-missing-import": "off",
+    },
+  },
+  {
     ignores: [
       ".nyc_output/",
       "coverage/",
