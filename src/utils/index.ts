@@ -26,3 +26,28 @@ export function createRule(
     },
   };
 }
+
+/**
+ * Compositing visitors
+ */
+export function compositingVisitors(
+  ...visitors: [Rule.RuleListener, ...Rule.RuleListener[]]
+): Rule.RuleListener {
+  const result: Rule.RuleListener = {};
+  for (const v of visitors) {
+    for (const key in v) {
+      if (result[key]) {
+        const o = result[key];
+        result[key] = (...args: any[]) => {
+          // @ts-expect-error -- ignore
+          o(...args);
+          // @ts-expect-error -- ignore
+          v[key](...args);
+        };
+      } else {
+        result[key] = v[key];
+      }
+    }
+  }
+  return result;
+}

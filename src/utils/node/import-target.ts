@@ -326,7 +326,7 @@ function resolveFilePath({
   resolverConfig: ResolveOptionsOptionalFS;
   resolveError?: string | null;
 } {
-  const basedir = path.dirname(path.resolve(context.filename));
+  const basedir = path.dirname(path.resolve(context.physicalFilename));
 
   const conditionNamesPrimary: string[] = ["node"];
 
