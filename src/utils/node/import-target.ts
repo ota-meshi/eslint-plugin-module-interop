@@ -424,7 +424,7 @@ function resolveFilePath({
           };
         }
       } catch (error) {
-        if (error instanceof Error === false) {
+        if (!(error instanceof Error)) {
           throw error;
         }
 

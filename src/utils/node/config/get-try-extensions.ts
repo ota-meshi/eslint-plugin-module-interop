@@ -60,7 +60,7 @@ export function getTryExtensions(
     return configured;
   }
 
-  if (isTypescript(context) === false) {
+  if (!isTypescript(context)) {
     return DEFAULT_JS_VALUE;
   }
 
