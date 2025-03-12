@@ -28,6 +28,23 @@ Code:
 
 
 Test: no-require-esm >> invalid
+Filename: tests/fixtures/rules/no-require-esm/invalid/ts-type-module/src-input.cts
+LanguageOptions: unable to serialize
+
+Code:
+  1 | /* tests/fixtures/rules/no-require-esm/invalid/ts-type-module/src-input.cts */
+  2 | import foo = require("./target.js");
+    |                      ^~~~~~~~~~~~~ [1]
+  3 | import bar = require("./target.ts");
+    |                      ^~~~~~~~~~~~~ [2]
+  4 |
+
+[1] Loading ESM using `require()` is forbidden.
+[2] Loading ESM using `require()` is forbidden.
+---
+
+
+Test: no-require-esm >> invalid
 Filename: tests/fixtures/rules/no-require-esm/invalid/type-commonjs/src-input.cjs
 
 Code:

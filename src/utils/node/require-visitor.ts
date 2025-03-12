@@ -1,6 +1,7 @@
 /**
  * This file was taken from eslint-plugin-n.
  */
+import type { TSESTree } from "@typescript-eslint/types";
 import type { Rule } from "eslint";
 import { ImportTarget, resolveOptions } from "./import-target.js";
 import { stripImportPathParams } from "./strip-import-path-params.js";
@@ -25,6 +26,14 @@ export function defineRequireVisitor(
   const options = resolveOptions(context);
 
   return {
+    TSExternalModuleReference(node: TSESTree.TSExternalModuleReference) {
+      const name = stripImportPathParams(node.expression.value);
+      if (includeCore || !isBuiltin(name)) {
+        targets.push(
+          new ImportTarget(context, node.expression, name, options, "require"),
+        );
+      }
+    },
     "Program:exit"() {
       const tracker = new ReferenceTracker(
         context.sourceCode.getScope(context.sourceCode.ast as never),

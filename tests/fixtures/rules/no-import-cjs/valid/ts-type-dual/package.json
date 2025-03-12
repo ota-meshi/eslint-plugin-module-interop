@@ -1,0 +1,9 @@
+{
+  "type": "commonjs",
+  "exports": {
+    ".": {
+      "import": "./lib/index.mjs",
+      "require": "./lib/index.js"
+    }
+  }
+}

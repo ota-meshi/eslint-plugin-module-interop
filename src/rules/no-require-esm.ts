@@ -16,7 +16,8 @@ export default createRule("no-require-esm", {
   create(context) {
     return defineRequireVisitor(context, {}, (targets) => {
       for (const target of targets) {
-        if (target.isESM()) {
+        const type = target.getModuleType();
+        if (type === "esm") {
           context.report({
             node: target.source,
             messageId: "unexpectedRequireEsm",

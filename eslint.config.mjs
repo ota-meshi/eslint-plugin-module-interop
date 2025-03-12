@@ -1,5 +1,7 @@
 import myPlugin from "@ota-meshi/eslint-plugin";
-// import tseslint from "typescript-eslint";
+import tseslint from "typescript-eslint";
+// import moduleInterop from "eslint-plugin-module-interop";
+
 export default [
   ...myPlugin.config({
     node: true,
@@ -12,6 +14,7 @@ export default [
     prettier: true,
     vue3: true,
   }),
+  // moduleInterop.configs.recommended,
   {
     rules: {
       complexity: "off",
@@ -30,6 +33,7 @@ export default [
         },
       ],
       "default-case": "off",
+      // "module-interop/no-import-cjs": "warn",
     },
   },
   {
@@ -58,12 +62,19 @@ export default [
     },
   },
   {
-    files: ["tests/fixtures/**/*.{js,mjs,cjs}"],
+    files: ["tests/fixtures/**/*.{js,mjs,cjs,ts,mts,cts}"],
+    languageOptions: {
+      parserOptions: {
+        project: null,
+      },
+    },
     rules: {
+      ...tseslint.configs.disableTypeChecked.rules,
       "jsdoc/require-jsdoc": "off",
       "no-undef": "off",
       "no-lone-blocks": "off",
       "no-unused-vars": "off",
+      "@typescript-eslint/no-unused-vars": "off",
       "no-shadow": "off",
       yoda: "off",
       "no-empty": "off",
@@ -74,6 +85,7 @@ export default [
       "n/no-extraneous-import": "off",
       "n/no-extraneous-require": "off",
       "n/no-missing-require": "off",
+      "@typescript-eslint/no-require-imports": "off",
     },
   },
   {
