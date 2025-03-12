@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import type { RuleTester } from "eslint";
 import { fileURLToPath } from "url";
+import { createRequire } from "module";
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 /**
@@ -141,7 +142,7 @@ function getConfig(inputFile: string) {
   }
   if (config && typeof config === "object") {
     code = `/* ${filename} */\n${code0}`;
-    return Object.assign({}, config, { code, filename });
+    return { ...adjustConfig(config), code, filename };
   }
   // inline config
   const configStr = /^\/\*(.*?)\*\//u.exec(code0);
@@ -156,5 +157,30 @@ function getConfig(inputFile: string) {
     }
   }
 
-  return Object.assign({}, config, { code, filename: inputFile });
+  return { ...adjustConfig(config), code, filename };
+}
+
+function adjustConfig(config: Record<string, unknown>): any {
+  if (
+    typeof config.languageOptions !== "object" ||
+    !config.languageOptions ||
+    !("parser" in config.languageOptions)
+  )
+    return config;
+
+  const parser = config.languageOptions.parser;
+  if (typeof parser !== "string") return config;
+
+  return {
+    ...config,
+    languageOptions: {
+      ...config.languageOptions,
+      parser: resolveParser(parser),
+    },
+  };
+}
+
+function resolveParser(parser: string) {
+  const resolved = createRequire(import.meta.url)(parser);
+  return resolved;
 }

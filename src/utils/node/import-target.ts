@@ -13,7 +13,8 @@ import resolver from "enhanced-resolve";
 import { getResolvePaths } from "./config/get-resolve-paths.js";
 import { getResolverConfig } from "./config/get-resolver-config.js";
 import { getTryExtensions } from "./config/get-try-extensions.js";
-import { getPackageJson } from "./get-package-json.js";
+import type { ModuleType } from "./detect-module-type.js";
+import { detectModuleType } from "./detect-module-type.js";
 
 /**
  * Remove trailing wildcard characters from a string
@@ -80,8 +81,14 @@ export function resolveOptions(context: Rule.RuleContext): Options {
   };
 }
 
-type ModuleType = "unknown" | "relative" | "absolute" | "node" | "npm" | "http";
-type ModuleStyle = "import" | "require" | "type";
+type TargetSourceType =
+  | "unknown"
+  | "relative"
+  | "absolute"
+  | "node"
+  | "npm"
+  | "http";
+type TargetModuleStyle = "import" | "require" | "type";
 
 /**
  * @param string The string to manipulate
@@ -119,12 +126,12 @@ export class ImportTarget {
   /**
    * What type of module are we looking for?
    */
-  protected readonly moduleType: ModuleType;
+  protected readonly sourceType: TargetSourceType;
 
   /**
    * What import style are we using
    */
-  protected readonly moduleStyle: ModuleStyle;
+  protected readonly moduleStyle: TargetModuleStyle;
 
   /**
    * The module name of this import target.
@@ -145,6 +152,8 @@ export class ImportTarget {
 
   protected readonly resolverConfig: ResolveOptionsOptionalFS;
 
+  private moduleType: { value: ModuleType | null } | null = null;
+
   /**
    * Initialize this instance.
    * @param context - The context for the import origin.
@@ -158,22 +167,22 @@ export class ImportTarget {
     source: TSESTree.Expression,
     name: string,
     options: Options,
-    fallbackModuleStyle: ModuleStyle,
+    fallbackModuleStyle: TargetModuleStyle,
   ) {
     this.context = context;
     this.source = source;
     this.name = name;
     this.options = options;
-    const moduleType = (this.moduleType = getModuleType({ name }));
+    const sourceType = (this.sourceType = getTargetSourceType({ name }));
     const moduleStyle = (this.moduleStyle = getModuleStyle({
       source,
       fallback: fallbackModuleStyle,
     }));
-    this.moduleName = getModuleName({ moduleType, name });
+    this.moduleName = getModuleName({ sourceType, name });
 
     const filePathInfo = resolveFilePath({
       name,
-      moduleType,
+      sourceType,
       moduleStyle,
       options,
       context,
@@ -185,50 +194,23 @@ export class ImportTarget {
   }
 
   /**
-   * Check whether this import target is a CommonJS module.
+   * Get the module type of this import target.
    */
-  public isCJS(): boolean {
+  public getModuleType(): ModuleType | null {
     if (this.filePath === null) {
-      return false;
+      return null;
     }
-    if (this.filePath.endsWith(".cjs") || this.filePath.endsWith(".cts"))
-      return true;
-    if (this.filePath.endsWith(".mjs") || this.filePath.endsWith(".mts"))
-      return false;
-    if (this.filePath.endsWith(".js")) {
-      const pkg = getPackageJson(this.filePath);
-      if (pkg) {
-        return pkg.type === "commonjs" || !pkg.type;
-      }
+    if (this.moduleType === null) {
+      this.moduleType = { value: detectModuleType(this.filePath) };
     }
-    return false;
-  }
-
-  /**
-   * Check whether this import target is an ECMAScript module.
-   */
-  public isESM(): boolean {
-    if (this.filePath === null) {
-      return false;
-    }
-    if (this.filePath.endsWith(".mjs") || this.filePath.endsWith(".mts"))
-      return true;
-    if (this.filePath.endsWith(".cjs") || this.filePath.endsWith(".cts"))
-      return false;
-    if (this.filePath.endsWith(".js")) {
-      const pkg = getPackageJson(this.filePath);
-      if (pkg) {
-        return pkg.type === "module";
-      }
-    }
-    return false;
+    return this.moduleType.value;
   }
 }
 
 /**
- * What type of module is this
+ * What type of source is this
  */
-function getModuleType({ name }: { name: string }): ModuleType {
+function getTargetSourceType({ name }: { name: string }): TargetSourceType {
   if (/^\.{1,2}(?:[/\\]|$)/.test(name)) {
     return "relative";
   }
@@ -260,8 +242,8 @@ function getModuleStyle({
   fallback,
 }: {
   source: TSESTree.Expression;
-  fallback: ModuleStyle;
-}): ModuleStyle {
+  fallback: TargetModuleStyle;
+}): TargetModuleStyle {
   let node: TSESTree.Node = source;
 
   do {
@@ -296,15 +278,15 @@ function getModuleStyle({
  * Get the node or npm module name
  */
 function getModuleName({
-  moduleType,
+  sourceType,
   name,
 }: {
-  moduleType: ModuleType;
+  sourceType: TargetSourceType;
   name: string;
 }): string | null {
-  if (moduleType === "relative") return null;
+  if (sourceType === "relative") return null;
 
-  if (moduleType === "npm") {
+  if (sourceType === "npm") {
     if (name.startsWith("@")) {
       return trimAfter(name, "/", 2);
     }
@@ -312,7 +294,7 @@ function getModuleName({
     return trimAfter(name, "/");
   }
 
-  if (moduleType === "node") {
+  if (sourceType === "node") {
     if (name.startsWith("node:")) {
       return trimAfter(name.slice(5), "/");
     }
@@ -329,14 +311,14 @@ function getModuleName({
  */
 function resolveFilePath({
   name,
-  moduleType,
+  sourceType,
   moduleStyle,
   options,
   context,
 }: {
   name: string;
-  moduleType: ModuleType;
-  moduleStyle: ModuleStyle;
+  sourceType: TargetSourceType;
+  moduleStyle: TargetModuleStyle;
   options: Options;
   context: Rule.RuleContext;
 }): {
@@ -344,7 +326,7 @@ function resolveFilePath({
   resolverConfig: ResolveOptionsOptionalFS;
   resolveError?: string | null;
 } {
-  const basedir = path.dirname(path.resolve(context.filename));
+  const basedir = path.dirname(path.resolve(context.physicalFilename));
 
   const conditionNamesPrimary: string[] = ["node"];
 
@@ -368,8 +350,8 @@ function resolveFilePath({
 
   if (
     moduleStyle === "require" ||
-    moduleType === "npm" ||
-    moduleType === "node"
+    sourceType === "npm" ||
+    sourceType === "node"
   ) {
     mainFields.push("main");
     mainFiles.push("index");
@@ -440,7 +422,7 @@ function resolveFilePath({
     }
   }
 
-  if (moduleType === "absolute" || moduleType === "relative") {
+  if (sourceType === "absolute" || sourceType === "relative") {
     return {
       filePath: path.resolve(basedir, name),
       resolverConfig: resolverConfigSecondary,

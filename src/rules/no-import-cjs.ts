@@ -20,7 +20,8 @@ export default createRule("no-import-cjs", {
       { ignoreTypeImport: true },
       (targets) => {
         for (const target of targets) {
-          if (target.isCJS()) {
+          const type = target.getModuleType();
+          if (type === "cjs") {
             context.report({
               node: target.source,
               messageId: "unexpectedCJSImport",

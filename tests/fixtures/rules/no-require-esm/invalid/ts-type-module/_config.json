@@ -1,0 +1,5 @@
+{
+  "languageOptions": {
+    "parser": "@typescript-eslint/parser"
+  }
+}

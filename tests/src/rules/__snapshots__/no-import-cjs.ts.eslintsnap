@@ -28,6 +28,23 @@ Code:
 
 
 Test: no-import-cjs >> invalid
+Filename: tests/fixtures/rules/no-import-cjs/invalid/ts-type-default/src-input.mts
+LanguageOptions: unable to serialize
+
+Code:
+  1 | /* tests/fixtures/rules/no-import-cjs/invalid/ts-type-default/src-input.mts */
+  2 | import * as foo from "./target.js";
+    |                      ^~~~~~~~~~~~~ [1]
+  3 | import * as bar from "./target.ts";
+    |                      ^~~~~~~~~~~~~ [2]
+  4 |
+
+[1] Importing CommonJS modules using `import` is forbidden.
+[2] Importing CommonJS modules using `import` is forbidden.
+---
+
+
+Test: no-import-cjs >> invalid
 Filename: tests/fixtures/rules/no-import-cjs/invalid/type-commonjs/src-input.mjs
 
 Code:
