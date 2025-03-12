@@ -8,5 +8,6 @@ export default [
       "module-interop/no-import-cjs": "error",
       "module-interop/no-require-esm": "error",
     },
+    languageOptions: { globals: { require: "readonly" } },
   },
 ];
