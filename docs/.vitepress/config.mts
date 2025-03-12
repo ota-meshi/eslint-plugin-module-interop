@@ -57,6 +57,11 @@ export default async (): Promise<UserConfig<DefaultTheme.Config>> => {
                 plugins: {
                   "module-interop": plugin,
                 },
+                languageOptions: {
+                  globals: {
+                    require: "readonly",
+                  },
+                },
               },
             ],
           }),
