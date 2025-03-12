@@ -37,7 +37,13 @@ export default createRule("no-require-esm", {
     // check for ESM imports as well.
     return compositingVisitors(
       requireVisitor,
-      defineImportVisitor(context, {}, check),
+      defineImportVisitor(
+        context,
+        {
+          ignoreTypeImport: true,
+        },
+        check,
+      ),
     );
 
     /**
