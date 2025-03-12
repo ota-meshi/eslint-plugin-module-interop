@@ -10,6 +10,7 @@ import { isBuiltin } from "node:module";
 export type Option = {
   includeCore?: boolean;
   ignoreTypeImport?: boolean;
+  ignoreImportStatement?: boolean;
 };
 
 /**
@@ -17,7 +18,11 @@ export type Option = {
  */
 export function defineImportVisitor(
   context: Rule.RuleContext,
-  { includeCore = false, ignoreTypeImport = false }: Option,
+  {
+    includeCore = false,
+    ignoreTypeImport = false,
+    ignoreImportStatement = false,
+  }: Option,
   callback: (targets: ImportTarget[]) => void,
 ): Rule.RuleListener {
   const targets: ImportTarget[] = [];
@@ -50,29 +55,33 @@ export function defineImportVisitor(
   }
 
   return {
-    ExportAllDeclaration(node) {
-      addTarget(node);
-    },
-    ExportNamedDeclaration(node) {
-      addTarget(node);
-    },
-    ImportDeclaration(node) {
-      if (
-        ignoreTypeImport &&
-        (node.importKind === "type" ||
-          (node.specifiers.length > 0 &&
-            node.specifiers.every(
-              (specifier) =>
-                specifier.type === "ImportSpecifier" &&
-                specifier.importKind === "type",
-            )))
-      ) {
-        // Ignore type imports.
-        return;
-      }
+    ...(ignoreImportStatement
+      ? {}
+      : {
+          ExportAllDeclaration(node) {
+            addTarget(node);
+          },
+          ExportNamedDeclaration(node) {
+            addTarget(node);
+          },
+          ImportDeclaration(node) {
+            if (
+              ignoreTypeImport &&
+              (node.importKind === "type" ||
+                (node.specifiers.length > 0 &&
+                  node.specifiers.every(
+                    (specifier) =>
+                      specifier.type === "ImportSpecifier" &&
+                      specifier.importKind === "type",
+                  )))
+            ) {
+              // Ignore type imports.
+              return;
+            }
 
-      addTarget(node);
-    },
+            addTarget(node);
+          },
+        }),
     ImportExpression(node) {
       addTarget(node);
     },
