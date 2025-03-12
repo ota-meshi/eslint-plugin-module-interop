@@ -1,5 +1,11 @@
 # eslint-plugin-module-interop
 
+## 0.2.2
+
+### Patch Changes
+
+- [#16](https://github.com/ota-meshi/eslint-plugin-module-interop/pull/16) [`1461b15`](https://github.com/ota-meshi/eslint-plugin-module-interop/commit/1461b15551d1c57f6ad58ce25f1ea39c759faabc) Thanks [@ota-meshi](https://github.com/ota-meshi)! - fix(no-import-cjs): false positive for ts files
+
 ## 0.2.1
 
 ### Patch Changes
