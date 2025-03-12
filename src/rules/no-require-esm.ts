@@ -3,7 +3,7 @@ import { compositingVisitors, createRule } from "../utils/index.js";
 import { detectModuleType } from "../utils/node/detect-module-type.js";
 import { defineRequireVisitor } from "../utils/node/require-visitor.js";
 import { isTypescript } from "../utils/node/is-typescript.js";
-import { defineImportVisitor } from "../utils/node/import-visitor.js";
+import { defineImportStatementVisitor } from "../utils/node/import-visitor.js";
 import type { ImportTarget } from "../utils/node/import-target.js";
 
 export default createRule("no-require-esm", {
@@ -37,13 +37,7 @@ export default createRule("no-require-esm", {
     // check for ESM imports as well.
     return compositingVisitors(
       requireVisitor,
-      defineImportVisitor(
-        context,
-        {
-          ignoreTypeImport: true,
-        },
-        check,
-      ),
+      defineImportStatementVisitor(context, { ignoreTypeImport: true }, check),
     );
 
     /**

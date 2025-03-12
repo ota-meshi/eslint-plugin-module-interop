@@ -1,23 +1,66 @@
-/**
- * This file was taken from eslint-plugin-n.
- */
 import type { Rule } from "eslint";
 import { ImportTarget, resolveOptions } from "./import-target.js";
 import type { TSESTree } from "@typescript-eslint/types";
 import { stripImportPathParams } from "./strip-import-path-params.js";
 import { isBuiltin } from "node:module";
 
-export type Option = {
-  includeCore?: boolean;
-  ignoreTypeImport?: boolean;
-};
+/**
+ * Define the import statement visitor.
+ */
+export function defineImportStatementVisitor(
+  context: Rule.RuleContext,
+  {
+    includeCore = false,
+    ignoreTypeImport = false,
+  }: {
+    includeCore?: boolean;
+    ignoreTypeImport?: boolean;
+  },
+  callback: (targets: ImportTarget[]) => void,
+): Rule.RuleListener {
+  return defineImportVisitor(
+    context,
+    {
+      includeCore,
+      ignoreTypeImport,
+      kind: "statement",
+    },
+    callback,
+  );
+}
+
+/**
+ * Define the dynamic import visitor.
+ */
+export function defineDynamicImportVisitor(
+  context: Rule.RuleContext,
+  { includeCore = false }: { includeCore?: boolean },
+  callback: (targets: ImportTarget[]) => void,
+): Rule.RuleListener {
+  return defineImportVisitor(
+    context,
+    {
+      includeCore,
+      kind: "expression",
+    },
+    callback,
+  );
+}
 
 /**
  * Define the import visitor.
  */
-export function defineImportVisitor(
+function defineImportVisitor(
   context: Rule.RuleContext,
-  { includeCore = false, ignoreTypeImport = false }: Option,
+  {
+    includeCore = false,
+    ignoreTypeImport = false,
+    kind,
+  }: {
+    includeCore?: boolean;
+    ignoreTypeImport?: boolean;
+    kind: "statement" | "expression";
+  },
   callback: (targets: ImportTarget[]) => void,
 ): Rule.RuleListener {
   const targets: ImportTarget[] = [];
@@ -49,36 +92,41 @@ export function defineImportVisitor(
     }
   }
 
-  return {
-    ExportAllDeclaration(node) {
-      addTarget(node);
-    },
-    ExportNamedDeclaration(node) {
-      addTarget(node);
-    },
-    ImportDeclaration(node) {
-      if (
-        ignoreTypeImport &&
-        (node.importKind === "type" ||
-          (node.specifiers.length > 0 &&
-            node.specifiers.every(
-              (specifier) =>
-                specifier.type === "ImportSpecifier" &&
-                specifier.importKind === "type",
-            )))
-      ) {
-        // Ignore type imports.
-        return;
+  return kind === "statement"
+    ? {
+        ExportAllDeclaration(node) {
+          addTarget(node);
+        },
+        ExportNamedDeclaration(node) {
+          addTarget(node);
+        },
+        ImportDeclaration(node) {
+          if (
+            ignoreTypeImport &&
+            (node.importKind === "type" ||
+              (node.specifiers.length > 0 &&
+                node.specifiers.every(
+                  (specifier) =>
+                    specifier.type === "ImportSpecifier" &&
+                    specifier.importKind === "type",
+                )))
+          ) {
+            // Ignore type imports.
+            return;
+          }
+
+          addTarget(node);
+        },
+        "Program:exit"() {
+          callback(targets);
+        },
       }
-
-      addTarget(node);
-    },
-    ImportExpression(node) {
-      addTarget(node);
-    },
-
-    "Program:exit"() {
-      callback(targets);
-    },
-  };
+    : {
+        ImportExpression(node) {
+          addTarget(node);
+        },
+        "Program:exit"() {
+          callback(targets);
+        },
+      };
 }
