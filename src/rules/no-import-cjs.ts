@@ -1,8 +1,12 @@
 import path from "node:path";
-import { createRule } from "../utils/index.js";
-import { defineImportVisitor } from "../utils/node/import-visitor.js";
+import { compositingVisitors, createRule } from "../utils/index.js";
+import {
+  defineDynamicImportVisitor,
+  defineImportStatementVisitor,
+} from "../utils/node/import-visitor.js";
 import { isTypescript } from "../utils/node/is-typescript.js";
 import { detectModuleType } from "../utils/node/detect-module-type.js";
+import type { ImportTarget } from "../utils/node/import-target.js";
 
 export default createRule("no-import-cjs", {
   meta: {
@@ -18,7 +22,6 @@ export default createRule("no-import-cjs", {
     type: "suggestion",
   },
   create(context) {
-    let ignoreImportStatement = false;
     if (isTypescript(context)) {
       const filename = path.resolve(context.filename);
       if (path.extname(filename) === ".ts") {
@@ -26,24 +29,28 @@ export default createRule("no-import-cjs", {
         if (moduleType === "cjs") {
           // If it's a ts file and after transpilation becomes cjs
           // it won't check any import statements because they will be turned into requires.
-          ignoreImportStatement = true;
+          return defineDynamicImportVisitor(context, {}, check);
         }
       }
     }
-    return defineImportVisitor(
-      context,
-      { ignoreTypeImport: true, ignoreImportStatement },
-      (targets) => {
-        for (const target of targets) {
-          const type = target.getModuleType();
-          if (type === "cjs") {
-            context.report({
-              node: target.source,
-              messageId: "unexpectedCJSImport",
-            });
-          }
-        }
-      },
+    return compositingVisitors(
+      defineImportStatementVisitor(context, { ignoreTypeImport: true }, check),
+      defineDynamicImportVisitor(context, {}, check),
     );
+
+    /**
+     * Checks for the import targets.
+     */
+    function check(targets: ImportTarget[]) {
+      for (const target of targets) {
+        const type = target.getModuleType();
+        if (type === "cjs") {
+          context.report({
+            node: target.source,
+            messageId: "unexpectedCJSImport",
+          });
+        }
+      }
+    }
   },
 });
