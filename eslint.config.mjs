@@ -85,6 +85,7 @@ export default [
       "n/no-extraneous-import": "off",
       "n/no-extraneous-require": "off",
       "n/no-missing-require": "off",
+      "n/file-extension-in-import": "off",
       "@typescript-eslint/no-require-imports": "off",
     },
   },

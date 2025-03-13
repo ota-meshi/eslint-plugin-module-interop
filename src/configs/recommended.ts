@@ -11,4 +11,5 @@ export const plugins = {
 };
 export const rules: Linter.RulesRecord = {
   // eslint-plugin-module-interop rules
+  "module-interop/prefer-json-modules": "error",
 };

@@ -1,0 +1,10 @@
+const a = await import("./target.json", x);
+const b = await import("./target", x);
+const c = await import("./target.json", { with: x });
+const d = await import("./target", { with: x });
+const e = await import("./target.json", { ...x });
+const f = await import("./target", { ...x });
+const g = await import("./target.json", { with: x });
+const h = await import("./target", { with: x });
+const i = await import("./target.json", { with: { ...x } });
+const j = await import("./target", { with: { ...x } });

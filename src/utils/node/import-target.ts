@@ -114,11 +114,21 @@ function trimAfter(string: string, matcher: string, count = 1) {
 /**
  * Information of an import target.
  */
-export class ImportTarget {
+export class ImportTarget<
+  N extends
+    | TSESTree.ExportAllDeclaration
+    | TSESTree.ExportNamedDeclaration
+    | TSESTree.ImportDeclaration
+    | TSESTree.ImportExpression
+    | TSESTree.CallExpression
+    | TSESTree.TSExternalModuleReference,
+> {
   /**
    * The context for the import origin
    */
   protected readonly context: Rule.RuleContext;
+
+  public readonly node: N;
 
   /**
    * The node of a `require()` or a module declaration source.
@@ -176,18 +186,26 @@ export class ImportTarget {
    */
   public constructor(
     context: Rule.RuleContext,
-    source: TSESTree.Expression,
+    node: N,
     name: string,
     options: Options,
     fallbackModuleStyle: TargetModuleStyle,
   ) {
     this.context = context;
+    this.node = node;
+    const source = (
+      node.type === "CallExpression"
+        ? node.arguments[0]
+        : node.type === "TSExternalModuleReference"
+          ? node.expression
+          : node.source
+    ) as TSESTree.Expression;
     this.source = source;
     this.name = name;
     this.options = options;
     const sourceType = (this.sourceType = getTargetSourceType({ name }));
     const moduleStyle = (this.moduleStyle = getModuleStyle({
-      source,
+      node,
       fallback: fallbackModuleStyle,
     }));
     this.moduleName = getModuleName({ sourceType, name });
@@ -250,38 +268,31 @@ function getTargetSourceType({ name }: { name: string }): TargetSourceType {
  * What module import style is used
  */
 function getModuleStyle({
-  source,
+  node,
   fallback,
 }: {
-  source: TSESTree.Expression;
+  node:
+    | TSESTree.ExportAllDeclaration
+    | TSESTree.ExportNamedDeclaration
+    | TSESTree.ImportDeclaration
+    | TSESTree.ImportExpression
+    | TSESTree.CallExpression
+    | TSESTree.TSExternalModuleReference;
   fallback: TargetModuleStyle;
 }): TargetModuleStyle {
-  let node: TSESTree.Node = source;
+  // `const {} = require('')`
+  if (
+    node.type === "CallExpression" ||
+    node.type === "TSExternalModuleReference"
+  ) {
+    return "require";
+  }
 
-  do {
-    if (node.parent == null) {
-      break;
-    }
-
-    // `const {} = require('')`
-    if (
-      node.parent.type === "CallExpression" &&
-      node.parent.callee.type === "Identifier" &&
-      node.parent.callee.name === "require"
-    ) {
-      return "require";
-    }
-
-    // `import {} from '';`
-    if (node.parent.type === "ImportDeclaration") {
-      // `import type {} from '';`
-      return "importKind" in node.parent && node.parent.importKind === "type"
-        ? "type"
-        : "import";
-    }
-
-    node = node.parent;
-  } while (node.parent);
+  // `import {} from '';`
+  if (node.type === "ImportDeclaration") {
+    // `import type {} from '';`
+    return node.importKind === "type" ? "type" : "import";
+  }
 
   return fallback;
 }
