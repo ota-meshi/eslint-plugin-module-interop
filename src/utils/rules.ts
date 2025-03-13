@@ -4,5 +4,10 @@
 import type { RuleModule } from "../types.js";
 import noImportCjs from "../rules/no-import-cjs.js";
 import noRequireEsm from "../rules/no-require-esm.js";
+import preferJsonModules from "../rules/prefer-json-modules.js";
 
-export const rules = [noImportCjs, noRequireEsm] as RuleModule[];
+export const rules = [
+  noImportCjs,
+  noRequireEsm,
+  preferJsonModules,
+] as RuleModule[];

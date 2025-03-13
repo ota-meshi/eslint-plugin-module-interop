@@ -22,7 +22,14 @@ export function defineEffectivelyImportVisitor(
     includeCore?: boolean;
     ignoreTypeImport?: boolean;
   },
-  callback: (targets: ImportTarget[]) => void,
+  callback: (
+    targets: ImportTarget<
+      | TSESTree.ExportAllDeclaration
+      | TSESTree.ExportNamedDeclaration
+      | TSESTree.ImportDeclaration
+      | TSESTree.ImportExpression
+    >[],
+  ) => void,
 ): Rule.RuleListener {
   if (isTypescript(context)) {
     const filename = path.resolve(context.filename);
@@ -56,7 +63,13 @@ export function defineImportStatementVisitor(
     includeCore?: boolean;
     ignoreTypeImport?: boolean;
   },
-  callback: (targets: ImportTarget[]) => void,
+  callback: (
+    targets: ImportTarget<
+      | TSESTree.ExportAllDeclaration
+      | TSESTree.ExportNamedDeclaration
+      | TSESTree.ImportDeclaration
+    >[],
+  ) => void,
 ): Rule.RuleListener {
   return defineImportVisitor(
     context,
@@ -75,7 +88,7 @@ export function defineImportStatementVisitor(
 export function defineDynamicImportVisitor(
   context: Rule.RuleContext,
   { includeCore = false }: { includeCore?: boolean },
-  callback: (targets: ImportTarget[]) => void,
+  callback: (targets: ImportTarget<TSESTree.ImportExpression>[]) => void,
 ): Rule.RuleListener {
   return defineImportVisitor(
     context,
@@ -90,7 +103,19 @@ export function defineDynamicImportVisitor(
 /**
  * Define the import visitor.
  */
-function defineImportVisitor(
+function defineImportVisitor<
+  K extends "statement" | "expression",
+  N extends
+    | TSESTree.ExportAllDeclaration
+    | TSESTree.ExportNamedDeclaration
+    | TSESTree.ImportDeclaration
+    | TSESTree.ImportExpression = K extends "statement"
+    ?
+        | TSESTree.ExportAllDeclaration
+        | TSESTree.ExportNamedDeclaration
+        | TSESTree.ImportDeclaration
+    : TSESTree.ImportExpression,
+>(
   context: Rule.RuleContext,
   {
     includeCore = false,
@@ -99,24 +124,18 @@ function defineImportVisitor(
   }: {
     includeCore?: boolean;
     ignoreTypeImport?: boolean;
-    kind: "statement" | "expression";
+    kind: K;
   },
-  callback: (targets: ImportTarget[]) => void,
+  callback: (targets: ImportTarget<N>[]) => void,
 ): Rule.RuleListener {
-  const targets: ImportTarget[] = [];
+  const targets: ImportTarget<N>[] = [];
   const options = resolveOptions(context);
 
   /**
    * Add an import target.
    * @param node - The node of a module declaration.
    */
-  function addTarget(
-    node:
-      | TSESTree.ExportAllDeclaration
-      | TSESTree.ExportNamedDeclaration
-      | TSESTree.ImportDeclaration
-      | TSESTree.ImportExpression,
-  ) {
+  function addTarget(node: N) {
     const source = node.source;
     if (
       source == null ||
@@ -128,17 +147,17 @@ function defineImportVisitor(
 
     const name = stripImportPathParams(source.value);
     if (includeCore || !isBuiltin(name)) {
-      targets.push(new ImportTarget(context, source, name, options, "import"));
+      targets.push(new ImportTarget(context, node, name, options, "import"));
     }
   }
 
   return kind === "statement"
     ? {
         ExportAllDeclaration(node) {
-          addTarget(node);
+          addTarget(node as N);
         },
         ExportNamedDeclaration(node) {
-          addTarget(node);
+          addTarget(node as N);
         },
         ImportDeclaration(node) {
           if (
@@ -155,7 +174,7 @@ function defineImportVisitor(
             return;
           }
 
-          addTarget(node);
+          addTarget(node as N);
         },
         "Program:exit"() {
           callback(targets);
@@ -163,7 +182,7 @@ function defineImportVisitor(
       }
     : {
         ImportExpression(node) {
-          addTarget(node);
+          addTarget(node as N);
         },
         "Program:exit"() {
           callback(targets);

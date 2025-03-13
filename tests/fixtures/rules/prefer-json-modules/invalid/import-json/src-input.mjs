@@ -1,0 +1,16 @@
+import a from "./target.json";
+import b from "./target";
+import c from "./target.json" with { t: "json" };
+import d from "./target" with { t: "json" };
+import e from "./target.json" with { type: "foo" };
+import f from "./target" with { type: "foo" };
+const g = await import("./target.json");
+const h = await import("./target");
+const i = await import("./target.json", {});
+const j = await import("./target", {});
+const k = await import("./target.json", { with: {} });
+const l = await import("./target", { with: {} });
+const m = await import("./target.json", { with: { t: "json" } });
+const n = await import("./target", { with: { t: "json" } });
+const o = await import("./target.json", { with: { type: "foo" } });
+const p = await import("./target", { with: { type: "foo" } });

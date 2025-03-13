@@ -1,0 +1,78 @@
+# eslint-snapshot-rule-tester format: v1
+
+
+Test: prefer-json-modules >> invalid
+Filename: tests/fixtures/rules/prefer-json-modules/invalid/import-json/src-input.mjs
+
+Code:
+  1 | /* tests/fixtures/rules/prefer-json-modules/invalid/import-json/src-input.mjs */
+  2 | import a from "./target.json";
+    |               ^~~~~~~~~~~~~~~ [1]
+  3 | import b from "./target";
+    |               ^~~~~~~~~~ [2]
+  4 | import c from "./target.json" with { t: "json" };
+    |               ^~~~~~~~~~~~~~~ [3]
+  5 | import d from "./target" with { t: "json" };
+    |               ^~~~~~~~~~ [4]
+  6 | import e from "./target.json" with { type: "foo" };
+    |               ^~~~~~~~~~~~~~~ [5]
+  7 | import f from "./target" with { type: "foo" };
+    |               ^~~~~~~~~~ [6]
+  8 | const g = await import("./target.json");
+    |                        ^~~~~~~~~~~~~~~ [7]
+  9 | const h = await import("./target");
+    |                        ^~~~~~~~~~ [8]
+ 10 | const i = await import("./target.json", {});
+    |                                         ^~ [9]
+ 11 | const j = await import("./target", {});
+    |                                    ^~ [10]
+ 12 | const k = await import("./target.json", { with: {} });
+    |                                                 ^~ [11]
+ 13 | const l = await import("./target", { with: {} });
+    |                                            ^~ [12]
+ 14 | const m = await import("./target.json", { with: { t: "json" } });
+    |                                                 ^~~~~~~~~~~~~ [13]
+ 15 | const n = await import("./target", { with: { t: "json" } });
+    |                                            ^~~~~~~~~~~~~ [14]
+ 16 | const o = await import("./target.json", { with: { type: "foo" } });
+    |                                                         ^~~~~ [15]
+ 17 | const p = await import("./target", { with: { type: "foo" } });
+    |                                                    ^~~~~ [16]
+ 18 |
+
+[1] `with {type: "json"}` is required for `*.json` import.
+[2] `with {type: "json"}` is required for `*.json` import.
+[3] `{type: "json"}` is required for `*.json` import.
+[4] `{type: "json"}` is required for `*.json` import.
+[5] `{type: "json"}` is required for `*.json` import.
+[6] `{type: "json"}` is required for `*.json` import.
+[7] `{with: {type: "json"}}` option is required for `*.json` import.
+[8] `{with: {type: "json"}}` option is required for `*.json` import.
+[9] `{with: {type: "json"}}` is required for `*.json` import.
+[10] `{with: {type: "json"}}` is required for `*.json` import.
+[11] `{type: "json"}` is required for `*.json` import.
+[12] `{type: "json"}` is required for `*.json` import.
+[13] `{type: "json"}` is required for `*.json` import.
+[14] `{type: "json"}` is required for `*.json` import.
+[15] `{type: "json"}` is required for `*.json` import.
+[16] `{type: "json"}` is required for `*.json` import.
+---
+
+
+Test: prefer-json-modules >> invalid
+Filename: tests/fixtures/rules/prefer-json-modules/invalid/node-modules/src-input.mjs
+
+Code:
+  1 | /* tests/fixtures/rules/prefer-json-modules/invalid/node-modules/src-input.mjs */
+  2 | import a from "json";
+    |               ^~~~~~ [1]
+  3 | import b from "json2";
+    |               ^~~~~~~ [2]
+  4 | import c from "json2/package.json";
+    |               ^~~~~~~~~~~~~~~~~~~~ [3]
+  5 |
+
+[1] `with {type: "json"}` is required for `*.json` import.
+[2] `with {type: "json"}` is required for `*.json` import.
+[3] `with {type: "json"}` is required for `*.json` import.
+---

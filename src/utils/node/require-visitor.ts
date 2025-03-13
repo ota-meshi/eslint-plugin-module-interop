@@ -25,7 +25,15 @@ export type Option = {
 export function defineEffectivelyRequireVisitor(
   context: Rule.RuleContext,
   { includeCore = false }: Option,
-  callback: (targets: ImportTarget[]) => void,
+  callback: (
+    targets: ImportTarget<
+      | TSESTree.CallExpression
+      | TSESTree.TSExternalModuleReference
+      | TSESTree.ExportAllDeclaration
+      | TSESTree.ExportNamedDeclaration
+      | TSESTree.ImportDeclaration
+    >[],
+  ) => void,
 ): Rule.RuleListener {
   const requireVisitor = compositingVisitors(
     defineCjsRequireVisitor(context, { includeCore }, callback),
@@ -62,7 +70,7 @@ export function defineEffectivelyRequireVisitor(
 export function defineCjsRequireVisitor(
   context: Rule.RuleContext,
   { includeCore = false }: Option,
-  callback: (targets: ImportTarget[]) => void,
+  callback: (targets: ImportTarget<TSESTree.CallExpression>[]) => void,
 ): Rule.RuleListener {
   const options = resolveOptions(context);
 
@@ -78,7 +86,7 @@ export function defineCjsRequireVisitor(
         },
       });
 
-      const targets: ImportTarget[] = [];
+      const targets: ImportTarget<TSESTree.CallExpression>[] = [];
       for (const { node } of references) {
         if (node.type !== "CallExpression") {
           continue;
@@ -97,7 +105,7 @@ export function defineCjsRequireVisitor(
         const name = stripImportPathParams(rawName);
         if (includeCore || !isBuiltin(name)) {
           targets.push(
-            new ImportTarget(context, targetNode, name, options, "require"),
+            new ImportTarget(context, node, name, options, "require"),
           );
         }
       }
@@ -113,18 +121,18 @@ export function defineCjsRequireVisitor(
 export function defineTsRequireVisitor(
   context: Rule.RuleContext,
   { includeCore = false }: Option,
-  callback: (targets: ImportTarget[]) => void,
+  callback: (
+    targets: ImportTarget<TSESTree.TSExternalModuleReference>[],
+  ) => void,
 ): Rule.RuleListener {
-  const targets: ImportTarget[] = [];
+  const targets: ImportTarget<TSESTree.TSExternalModuleReference>[] = [];
   const options = resolveOptions(context);
 
   return {
     TSExternalModuleReference(node: TSESTree.TSExternalModuleReference) {
       const name = stripImportPathParams(node.expression.value);
       if (includeCore || !isBuiltin(name)) {
-        targets.push(
-          new ImportTarget(context, node.expression, name, options, "require"),
-        );
+        targets.push(new ImportTarget(context, node, name, options, "require"));
       }
     },
     "Program:exit"() {

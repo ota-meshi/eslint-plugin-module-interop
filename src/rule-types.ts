@@ -23,6 +23,11 @@ export interface RuleOptions {
    * @see https://ota-meshi.github.io/eslint-plugin-module-interop/rules/no-require-esm.html
    */
   'module-interop/no-require-esm'?: Linter.RuleEntry<[]>
+  /**
+   * enforce json imports to have the `{type: "json"}` attribute.
+   * @see https://ota-meshi.github.io/eslint-plugin-module-interop/rules/prefer-json-modules.html
+   */
+  'module-interop/prefer-json-modules'?: Linter.RuleEntry<[]>
 }
 
 /* ======= Declarations ======= */

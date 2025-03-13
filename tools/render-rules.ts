@@ -1,5 +1,5 @@
 import type { RuleModule } from "../src/types.js";
-import { rules } from "../src/utils/rules.js";
+import { rules } from "./lib/load-rules.js";
 
 //eslint-disable-next-line jsdoc/require-jsdoc -- tool
 export default function renderRulesTableContent(

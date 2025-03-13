@@ -27,7 +27,7 @@
     "test:update": "pnpm run mocha -- \"tests/src/**/*.ts\" --reporter=dot --update",
     "update": "pnpm run ts -- ./tools/update.ts && pnpm run eslint-fix",
     "new": "pnpm run ts -- ./tools/new-rule.ts",
-    "docs:watch": "vitepress dev docs",
+    "docs:watch": "vitepress dev docs --open",
     "docs:build": "vitepress build docs",
     "ts": "node --import=tsx",
     "mocha": "pnpm run ts ./node_modules/mocha/bin/mocha.js",

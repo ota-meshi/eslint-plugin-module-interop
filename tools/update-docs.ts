@@ -1,6 +1,6 @@
 import path from "path";
 import fs from "fs";
-import { rules } from "../src/utils/rules.js";
+import { rules } from "./lib/load-rules.js";
 import type { RuleModule } from "../src/types.js";
 import { getNewVersion } from "./lib/changesets-util.js";
 import { fileURLToPath } from "url";

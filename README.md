@@ -87,6 +87,7 @@ The rules with the following star ⭐ are included in the configs.
 |:--------|:------------|:-------:|:-----------:|
 | [module-interop/no-import-cjs](https://ota-meshi.github.io/eslint-plugin-module-interop/rules/no-import-cjs.html) | disallow importing CommonJS modules |  |  |
 | [module-interop/no-require-esm](https://ota-meshi.github.io/eslint-plugin-module-interop/rules/no-require-esm.html) | disallow `require(esm)` |  |  |
+| [module-interop/prefer-json-modules](https://ota-meshi.github.io/eslint-plugin-module-interop/rules/prefer-json-modules.html) | enforce json imports to have the `{type: "json"}` attribute. |  | ⭐ |
 
 <!--RULES_TABLE_END-->
 <!--RULES_SECTION_END-->

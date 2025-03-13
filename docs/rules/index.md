@@ -15,3 +15,4 @@ The rules with the following star ⭐ are included in the `plugin.configs.recomm
 |:--------|:------------|:-------:|:-----------:|
 | [module-interop/no-import-cjs](./no-import-cjs.md) | disallow importing CommonJS modules |  |  |
 | [module-interop/no-require-esm](./no-require-esm.md) | disallow `require(esm)` |  |  |
+| [module-interop/prefer-json-modules](./prefer-json-modules.md) | enforce json imports to have the `{type: "json"}` attribute. |  | ⭐ |

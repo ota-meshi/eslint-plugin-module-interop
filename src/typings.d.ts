@@ -86,6 +86,8 @@ declare module "@eslint-community/eslint-utils" {
     TrackedReferences,
     isParenthesized,
     getStringIfConstant,
+    getStaticValue,
+    getPropertyName,
   } from "@types/eslint-utils";
   import { READ, CALL, CONSTRUCT, ESM } from "@types/eslint-utils";
   export function getStringIfConstant(

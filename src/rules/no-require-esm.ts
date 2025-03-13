@@ -1,3 +1,4 @@
+import type { TSESTree } from "@typescript-eslint/types";
 import { createRule } from "../utils/index.js";
 import { defineEffectivelyRequireVisitor } from "../utils/node/require-visitor.js";
 import type { ImportTarget } from "../utils/node/import-target.js";
@@ -20,7 +21,15 @@ export default createRule("no-require-esm", {
     /**
      * Checks for the import targets.
      */
-    function check(targets: ImportTarget[]) {
+    function check(
+      targets: ImportTarget<
+        | TSESTree.CallExpression
+        | TSESTree.TSExternalModuleReference
+        | TSESTree.ExportAllDeclaration
+        | TSESTree.ExportNamedDeclaration
+        | TSESTree.ImportDeclaration
+      >[],
+    ) {
       for (const target of targets) {
         const type = target.getModuleType();
         if (type === "esm") {
