@@ -1,5 +1,11 @@
 # eslint-plugin-module-interop
 
+## 0.3.0
+
+### Minor Changes
+
+- [#18](https://github.com/ota-meshi/eslint-plugin-module-interop/pull/18) [`30432e9`](https://github.com/ota-meshi/eslint-plugin-module-interop/commit/30432e9483a0ef6d19ffbb0c9eb18c187b0ef36d) Thanks [@ota-meshi](https://github.com/ota-meshi)! - feat: add `module-interop/prefer-json-modules` rule
+
 ## 0.2.2
 
 ### Patch Changes

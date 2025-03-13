@@ -3,13 +3,13 @@ pageClass: "rule-details"
 sidebarDepth: 0
 title: "module-interop/prefer-json-modules"
 description: "enforce json imports to have the `{type: \"json\"}` attribute."
+since: "v0.3.0"
 ---
 
 # module-interop/prefer-json-modules
 
 > enforce json imports to have the `{type: "json"}` attribute.
 
-- ❗ <badge text="This rule has not been released yet." vertical="middle" type="error"> **_This rule has not been released yet._** </badge>
 - ⚙️ This rule is included in `plugin.configs.recommended`.
 - 💡 Some problems reported by this rule are manually fixable by editor [suggestions](https://eslint.org/docs/developer-guide/working-with-rules#providing-suggestions).
 
@@ -41,6 +41,10 @@ Nothing.
 - [TC39 Proposal - JSON modules]
 
 [TC39 Proposal - JSON modules]: https://github.com/tc39/proposal-json-modules
+
+## 🚀 Version
+
+This rule was introduced in eslint-plugin-module-interop v0.3.0
 
 ## 🔍 Implementation
 
