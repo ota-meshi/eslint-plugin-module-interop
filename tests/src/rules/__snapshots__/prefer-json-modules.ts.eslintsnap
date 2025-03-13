@@ -11,17 +11,17 @@ Code:
   3 | import b from "./target";
     |               ^~~~~~~~~~ [2]
   4 | import c from "./target.json" with {};
-    |               ^~~~~~~~~~~~~~~ [3]
+    |                                    ^~ [3]
   5 | import d from "./target" with {};
-    |               ^~~~~~~~~~ [4]
+    |                               ^~ [4]
   6 | import e from "./target.json" with { t: "json" };
-    |               ^~~~~~~~~~~~~~~ [5]
+    |                                    ^~~~~~~~~~~~~ [5]
   7 | import f from "./target" with { t: "json" };
-    |               ^~~~~~~~~~ [6]
+    |                               ^~~~~~~~~~~~~ [6]
   8 | import g from "./target.json" with { type: "foo" };
-    |               ^~~~~~~~~~~~~~~ [7]
+    |                                            ^~~~~ [7]
   9 | import h from "./target" with { type: "foo" };
-    |               ^~~~~~~~~~ [8]
+    |                                       ^~~~~ [8]
  10 | const i = await import("./target.json");
     |                        ^~~~~~~~~~~~~~~ [9]
  11 | const j = await import("./target");

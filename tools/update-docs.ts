@@ -12,9 +12,7 @@ function formatItems(items: string[]) {
   if (items.length <= 2) {
     return items.join(" and ");
   }
-  return `all of ${items.slice(0, -1).join(", ")} and ${
-    items[items.length - 1]
-  }`;
+  return `all of ${items.slice(0, -1).join(", ")} and ${items.at(-1)}`;
 }
 
 //eslint-disable-next-line jsdoc/require-jsdoc -- tools

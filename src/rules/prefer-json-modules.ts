@@ -5,8 +5,11 @@ import {
   defineDynamicImportVisitor,
   defineImportStatementVisitor,
 } from "../utils/node/import-visitor.js";
-import { getStaticValue } from "@eslint-community/eslint-utils";
-import type { Rule } from "eslint";
+import {
+  getStaticValue,
+  isClosingBraceToken,
+} from "@eslint-community/eslint-utils";
+import type { AST, Rule } from "eslint";
 
 export default createRule("prefer-json-modules", {
   meta: {
@@ -87,28 +90,35 @@ export default createRule("prefer-json-modules", {
     ) {
       const node = target.node;
       if (!node.attributes || node.attributes.length === 0) {
+        const afterSource = sourceCode.getTokenAfter(target.source);
+        let braces: { start: AST.Token; end: AST.Token } | null = null;
+        if (afterSource && afterSource.value === "with") {
+          const afterWith = sourceCode.getTokenAfter(afterSource)!;
+          braces = {
+            start: afterWith,
+            end: sourceCode.getLastToken(node, isClosingBraceToken)!,
+          };
+        }
         context.report({
           node: target.source,
+          loc: braces
+            ? {
+                start: braces.start.loc.start,
+                end: braces.end.loc.end,
+              }
+            : target.source.loc,
           messageId: "expectedOptionForImportDeclaration",
           suggest: [
             {
               messageId: "addTypeJsonAttribute",
               fix: (fixer) => {
-                const afterSource = sourceCode.getTokenAfter(target.source);
-                if (
-                  !afterSource ||
-                  afterSource.value === ";" ||
-                  node.range[1] <= afterSource.range[0]
-                ) {
+                if (!braces) {
                   return fixer.insertTextAfter(
                     target.source,
                     ' with {type: "json"}',
                   );
                 }
-                if (afterSource.value !== "with") return null; // unknown syntax
-                const afterWith = sourceCode.getTokenAfter(afterSource);
-                if (!afterWith || afterWith.value !== "{") return null; // unknown syntax
-                return fixer.insertTextAfter(afterWith, 'type: "json"');
+                return fixer.insertTextAfter(braces.start, 'type: "json"');
               },
             },
           ],
@@ -128,7 +138,11 @@ export default createRule("prefer-json-modules", {
       if (typeAttribute && typeAttribute.value.value === "json") return;
 
       context.report({
-        node: target.source,
+        node: typeAttribute?.value ?? target.source,
+        loc: typeAttribute?.value?.loc ?? {
+          start: sourceCode.getTokenBefore(node.attributes[0])!.loc.start,
+          end: sourceCode.getTokenAfter(node.attributes.at(-1)!)!.loc.end,
+        },
         messageId: "expectedTypeJsonAttribute",
         suggest: !typeAttribute
           ? [
@@ -136,7 +150,7 @@ export default createRule("prefer-json-modules", {
                 messageId: "addTypeJsonAttribute",
                 fix: (fixer: Rule.RuleFixer) =>
                   fixer.insertTextAfter(
-                    node.attributes[node.attributes.length - 1],
+                    node.attributes.at(-1)!,
                     ', type: "json"',
                   ),
               },
@@ -192,7 +206,7 @@ export default createRule("prefer-json-modules", {
               fix: (fixer) =>
                 options.properties.length
                   ? fixer.insertTextAfter(
-                      options.properties[options.properties.length - 1],
+                      options.properties.at(-1),
                       ', with: {type: "json"}',
                     )
                   : fixer.insertTextAfter(
@@ -229,7 +243,7 @@ export default createRule("prefer-json-modules", {
               fix: (fixer) =>
                 withObject.properties.length
                   ? fixer.insertTextAfter(
-                      withObject.properties[withObject.properties.length - 1],
+                      withObject.properties.at(-1),
                       ', type: "json"',
                     )
                   : fixer.insertTextAfter(

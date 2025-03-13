@@ -88,6 +88,7 @@ declare module "@eslint-community/eslint-utils" {
     getStringIfConstant,
     getStaticValue,
     getPropertyName,
+    isClosingBraceToken,
   } from "@types/eslint-utils";
   import { READ, CALL, CONSTRUCT, ESM } from "@types/eslint-utils";
   export function getStringIfConstant(
