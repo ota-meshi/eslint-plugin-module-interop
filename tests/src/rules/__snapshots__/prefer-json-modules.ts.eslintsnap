@@ -10,52 +10,380 @@ Code:
     |               ^~~~~~~~~~~~~~~ [1]
   3 | import b from "./target";
     |               ^~~~~~~~~~ [2]
-  4 | import c from "./target.json" with { t: "json" };
+  4 | import c from "./target.json" with {};
     |               ^~~~~~~~~~~~~~~ [3]
-  5 | import d from "./target" with { t: "json" };
+  5 | import d from "./target" with {};
     |               ^~~~~~~~~~ [4]
-  6 | import e from "./target.json" with { type: "foo" };
+  6 | import e from "./target.json" with { t: "json" };
     |               ^~~~~~~~~~~~~~~ [5]
-  7 | import f from "./target" with { type: "foo" };
+  7 | import f from "./target" with { t: "json" };
     |               ^~~~~~~~~~ [6]
-  8 | const g = await import("./target.json");
-    |                        ^~~~~~~~~~~~~~~ [7]
-  9 | const h = await import("./target");
-    |                        ^~~~~~~~~~ [8]
- 10 | const i = await import("./target.json", {});
-    |                                         ^~ [9]
- 11 | const j = await import("./target", {});
-    |                                    ^~ [10]
- 12 | const k = await import("./target.json", { with: {} });
-    |                                                 ^~ [11]
- 13 | const l = await import("./target", { with: {} });
-    |                                            ^~ [12]
- 14 | const m = await import("./target.json", { with: { t: "json" } });
-    |                                                 ^~~~~~~~~~~~~ [13]
- 15 | const n = await import("./target", { with: { t: "json" } });
-    |                                            ^~~~~~~~~~~~~ [14]
- 16 | const o = await import("./target.json", { with: { type: "foo" } });
-    |                                                         ^~~~~ [15]
- 17 | const p = await import("./target", { with: { type: "foo" } });
-    |                                                    ^~~~~ [16]
- 18 |
+  8 | import g from "./target.json" with { type: "foo" };
+    |               ^~~~~~~~~~~~~~~ [7]
+  9 | import h from "./target" with { type: "foo" };
+    |               ^~~~~~~~~~ [8]
+ 10 | const i = await import("./target.json");
+    |                        ^~~~~~~~~~~~~~~ [9]
+ 11 | const j = await import("./target");
+    |                        ^~~~~~~~~~ [10]
+ 12 | const k = await import("./target.json", {});
+    |                                         ^~ [11]
+ 13 | const l = await import("./target", {});
+    |                                    ^~ [12]
+ 14 | const m = await import("./target.json", { with: {} });
+    |                                                 ^~ [13]
+ 15 | const n = await import("./target", { with: {} });
+    |                                            ^~ [14]
+ 16 | const o = await import("./target.json", { with: { t: "json" } });
+    |                                                 ^~~~~~~~~~~~~ [15]
+ 17 | const p = await import("./target", { with: { t: "json" } });
+    |                                            ^~~~~~~~~~~~~ [16]
+ 18 | const q = await import("./target.json", { with: { type: "foo" } });
+    |                                                         ^~~~~ [17]
+ 19 | const r = await import("./target", { with: { type: "foo" } });
+    |                                                    ^~~~~ [18]
+ 20 |
 
 [1] `with {type: "json"}` is required for `*.json` import.
+    Suggestions:
+      - Add `{type: "json"}` attribute to import.
+        Output:
+          1 | /* tests/fixtures/rules/prefer-json-modules/invalid/import-json/src-input.mjs */
+          2 | import a from "./target.json" with {type: "json"};
+          3 | import b from "./target";
+          4 | import c from "./target.json" with {};
+          5 | import d from "./target" with {};
+          6 | import e from "./target.json" with { t: "json" };
+          7 | import f from "./target" with { t: "json" };
+          8 | import g from "./target.json" with { type: "foo" };
+          9 | import h from "./target" with { type: "foo" };
+         10 | const i = await import("./target.json");
+         11 | const j = await import("./target");
+         12 | const k = await import("./target.json", {});
+         13 | const l = await import("./target", {});
+         14 | const m = await import("./target.json", { with: {} });
+         15 | const n = await import("./target", { with: {} });
+         16 | const o = await import("./target.json", { with: { t: "json" } });
+         17 | const p = await import("./target", { with: { t: "json" } });
+         18 | const q = await import("./target.json", { with: { type: "foo" } });
+         19 | const r = await import("./target", { with: { type: "foo" } });
+         20 |
 [2] `with {type: "json"}` is required for `*.json` import.
-[3] `{type: "json"}` is required for `*.json` import.
-[4] `{type: "json"}` is required for `*.json` import.
+    Suggestions:
+      - Add `{type: "json"}` attribute to import.
+        Output:
+          1 | /* tests/fixtures/rules/prefer-json-modules/invalid/import-json/src-input.mjs */
+          2 | import a from "./target.json";
+          3 | import b from "./target" with {type: "json"};
+          4 | import c from "./target.json" with {};
+          5 | import d from "./target" with {};
+          6 | import e from "./target.json" with { t: "json" };
+          7 | import f from "./target" with { t: "json" };
+          8 | import g from "./target.json" with { type: "foo" };
+          9 | import h from "./target" with { type: "foo" };
+         10 | const i = await import("./target.json");
+         11 | const j = await import("./target");
+         12 | const k = await import("./target.json", {});
+         13 | const l = await import("./target", {});
+         14 | const m = await import("./target.json", { with: {} });
+         15 | const n = await import("./target", { with: {} });
+         16 | const o = await import("./target.json", { with: { t: "json" } });
+         17 | const p = await import("./target", { with: { t: "json" } });
+         18 | const q = await import("./target.json", { with: { type: "foo" } });
+         19 | const r = await import("./target", { with: { type: "foo" } });
+         20 |
+[3] `with {type: "json"}` is required for `*.json` import.
+    Suggestions:
+      - Add `{type: "json"}` attribute to import.
+        Output:
+          1 | /* tests/fixtures/rules/prefer-json-modules/invalid/import-json/src-input.mjs */
+          2 | import a from "./target.json";
+          3 | import b from "./target";
+          4 | import c from "./target.json" with {type: "json"};
+          5 | import d from "./target" with {};
+          6 | import e from "./target.json" with { t: "json" };
+          7 | import f from "./target" with { t: "json" };
+          8 | import g from "./target.json" with { type: "foo" };
+          9 | import h from "./target" with { type: "foo" };
+         10 | const i = await import("./target.json");
+         11 | const j = await import("./target");
+         12 | const k = await import("./target.json", {});
+         13 | const l = await import("./target", {});
+         14 | const m = await import("./target.json", { with: {} });
+         15 | const n = await import("./target", { with: {} });
+         16 | const o = await import("./target.json", { with: { t: "json" } });
+         17 | const p = await import("./target", { with: { t: "json" } });
+         18 | const q = await import("./target.json", { with: { type: "foo" } });
+         19 | const r = await import("./target", { with: { type: "foo" } });
+         20 |
+[4] `with {type: "json"}` is required for `*.json` import.
+    Suggestions:
+      - Add `{type: "json"}` attribute to import.
+        Output:
+          1 | /* tests/fixtures/rules/prefer-json-modules/invalid/import-json/src-input.mjs */
+          2 | import a from "./target.json";
+          3 | import b from "./target";
+          4 | import c from "./target.json" with {};
+          5 | import d from "./target" with {type: "json"};
+          6 | import e from "./target.json" with { t: "json" };
+          7 | import f from "./target" with { t: "json" };
+          8 | import g from "./target.json" with { type: "foo" };
+          9 | import h from "./target" with { type: "foo" };
+         10 | const i = await import("./target.json");
+         11 | const j = await import("./target");
+         12 | const k = await import("./target.json", {});
+         13 | const l = await import("./target", {});
+         14 | const m = await import("./target.json", { with: {} });
+         15 | const n = await import("./target", { with: {} });
+         16 | const o = await import("./target.json", { with: { t: "json" } });
+         17 | const p = await import("./target", { with: { t: "json" } });
+         18 | const q = await import("./target.json", { with: { type: "foo" } });
+         19 | const r = await import("./target", { with: { type: "foo" } });
+         20 |
 [5] `{type: "json"}` is required for `*.json` import.
+    Suggestions:
+      - Add `{type: "json"}` attribute to import.
+        Output:
+          1 | /* tests/fixtures/rules/prefer-json-modules/invalid/import-json/src-input.mjs */
+          2 | import a from "./target.json";
+          3 | import b from "./target";
+          4 | import c from "./target.json" with {};
+          5 | import d from "./target" with {};
+          6 | import e from "./target.json" with { t: "json", type: "json" };
+          7 | import f from "./target" with { t: "json" };
+          8 | import g from "./target.json" with { type: "foo" };
+          9 | import h from "./target" with { type: "foo" };
+         10 | const i = await import("./target.json");
+         11 | const j = await import("./target");
+         12 | const k = await import("./target.json", {});
+         13 | const l = await import("./target", {});
+         14 | const m = await import("./target.json", { with: {} });
+         15 | const n = await import("./target", { with: {} });
+         16 | const o = await import("./target.json", { with: { t: "json" } });
+         17 | const p = await import("./target", { with: { t: "json" } });
+         18 | const q = await import("./target.json", { with: { type: "foo" } });
+         19 | const r = await import("./target", { with: { type: "foo" } });
+         20 |
 [6] `{type: "json"}` is required for `*.json` import.
-[7] `{with: {type: "json"}}` option is required for `*.json` import.
-[8] `{with: {type: "json"}}` option is required for `*.json` import.
-[9] `{with: {type: "json"}}` is required for `*.json` import.
-[10] `{with: {type: "json"}}` is required for `*.json` import.
-[11] `{type: "json"}` is required for `*.json` import.
-[12] `{type: "json"}` is required for `*.json` import.
+    Suggestions:
+      - Add `{type: "json"}` attribute to import.
+        Output:
+          1 | /* tests/fixtures/rules/prefer-json-modules/invalid/import-json/src-input.mjs */
+          2 | import a from "./target.json";
+          3 | import b from "./target";
+          4 | import c from "./target.json" with {};
+          5 | import d from "./target" with {};
+          6 | import e from "./target.json" with { t: "json" };
+          7 | import f from "./target" with { t: "json", type: "json" };
+          8 | import g from "./target.json" with { type: "foo" };
+          9 | import h from "./target" with { type: "foo" };
+         10 | const i = await import("./target.json");
+         11 | const j = await import("./target");
+         12 | const k = await import("./target.json", {});
+         13 | const l = await import("./target", {});
+         14 | const m = await import("./target.json", { with: {} });
+         15 | const n = await import("./target", { with: {} });
+         16 | const o = await import("./target.json", { with: { t: "json" } });
+         17 | const p = await import("./target", { with: { t: "json" } });
+         18 | const q = await import("./target.json", { with: { type: "foo" } });
+         19 | const r = await import("./target", { with: { type: "foo" } });
+         20 |
+[7] `{type: "json"}` is required for `*.json` import.
+[8] `{type: "json"}` is required for `*.json` import.
+[9] `{with: {type: "json"}}` option is required for `*.json` import.
+    Suggestions:
+      - Add `{type: "json"}` attribute to import.
+        Output:
+          1 | /* tests/fixtures/rules/prefer-json-modules/invalid/import-json/src-input.mjs */
+          2 | import a from "./target.json";
+          3 | import b from "./target";
+          4 | import c from "./target.json" with {};
+          5 | import d from "./target" with {};
+          6 | import e from "./target.json" with { t: "json" };
+          7 | import f from "./target" with { t: "json" };
+          8 | import g from "./target.json" with { type: "foo" };
+          9 | import h from "./target" with { type: "foo" };
+         10 | const i = await import("./target.json", {with: {type: "json"}});
+         11 | const j = await import("./target");
+         12 | const k = await import("./target.json", {});
+         13 | const l = await import("./target", {});
+         14 | const m = await import("./target.json", { with: {} });
+         15 | const n = await import("./target", { with: {} });
+         16 | const o = await import("./target.json", { with: { t: "json" } });
+         17 | const p = await import("./target", { with: { t: "json" } });
+         18 | const q = await import("./target.json", { with: { type: "foo" } });
+         19 | const r = await import("./target", { with: { type: "foo" } });
+         20 |
+[10] `{with: {type: "json"}}` option is required for `*.json` import.
+     Suggestions:
+       - Add `{type: "json"}` attribute to import.
+         Output:
+           1 | /* tests/fixtures/rules/prefer-json-modules/invalid/import-json/src-input.mjs */
+           2 | import a from "./target.json";
+           3 | import b from "./target";
+           4 | import c from "./target.json" with {};
+           5 | import d from "./target" with {};
+           6 | import e from "./target.json" with { t: "json" };
+           7 | import f from "./target" with { t: "json" };
+           8 | import g from "./target.json" with { type: "foo" };
+           9 | import h from "./target" with { type: "foo" };
+          10 | const i = await import("./target.json");
+          11 | const j = await import("./target", {with: {type: "json"}});
+          12 | const k = await import("./target.json", {});
+          13 | const l = await import("./target", {});
+          14 | const m = await import("./target.json", { with: {} });
+          15 | const n = await import("./target", { with: {} });
+          16 | const o = await import("./target.json", { with: { t: "json" } });
+          17 | const p = await import("./target", { with: { t: "json" } });
+          18 | const q = await import("./target.json", { with: { type: "foo" } });
+          19 | const r = await import("./target", { with: { type: "foo" } });
+          20 |
+[11] `{with: {type: "json"}}` is required for `*.json` import.
+     Suggestions:
+       - Add `{type: "json"}` attribute to import.
+         Output:
+           1 | /* tests/fixtures/rules/prefer-json-modules/invalid/import-json/src-input.mjs */
+           2 | import a from "./target.json";
+           3 | import b from "./target";
+           4 | import c from "./target.json" with {};
+           5 | import d from "./target" with {};
+           6 | import e from "./target.json" with { t: "json" };
+           7 | import f from "./target" with { t: "json" };
+           8 | import g from "./target.json" with { type: "foo" };
+           9 | import h from "./target" with { type: "foo" };
+          10 | const i = await import("./target.json");
+          11 | const j = await import("./target");
+          12 | const k = await import("./target.json", {with: {type: "json"}});
+          13 | const l = await import("./target", {});
+          14 | const m = await import("./target.json", { with: {} });
+          15 | const n = await import("./target", { with: {} });
+          16 | const o = await import("./target.json", { with: { t: "json" } });
+          17 | const p = await import("./target", { with: { t: "json" } });
+          18 | const q = await import("./target.json", { with: { type: "foo" } });
+          19 | const r = await import("./target", { with: { type: "foo" } });
+          20 |
+[12] `{with: {type: "json"}}` is required for `*.json` import.
+     Suggestions:
+       - Add `{type: "json"}` attribute to import.
+         Output:
+           1 | /* tests/fixtures/rules/prefer-json-modules/invalid/import-json/src-input.mjs */
+           2 | import a from "./target.json";
+           3 | import b from "./target";
+           4 | import c from "./target.json" with {};
+           5 | import d from "./target" with {};
+           6 | import e from "./target.json" with { t: "json" };
+           7 | import f from "./target" with { t: "json" };
+           8 | import g from "./target.json" with { type: "foo" };
+           9 | import h from "./target" with { type: "foo" };
+          10 | const i = await import("./target.json");
+          11 | const j = await import("./target");
+          12 | const k = await import("./target.json", {});
+          13 | const l = await import("./target", {with: {type: "json"}});
+          14 | const m = await import("./target.json", { with: {} });
+          15 | const n = await import("./target", { with: {} });
+          16 | const o = await import("./target.json", { with: { t: "json" } });
+          17 | const p = await import("./target", { with: { t: "json" } });
+          18 | const q = await import("./target.json", { with: { type: "foo" } });
+          19 | const r = await import("./target", { with: { type: "foo" } });
+          20 |
 [13] `{type: "json"}` is required for `*.json` import.
+     Suggestions:
+       - Add `{type: "json"}` attribute to import.
+         Output:
+           1 | /* tests/fixtures/rules/prefer-json-modules/invalid/import-json/src-input.mjs */
+           2 | import a from "./target.json";
+           3 | import b from "./target";
+           4 | import c from "./target.json" with {};
+           5 | import d from "./target" with {};
+           6 | import e from "./target.json" with { t: "json" };
+           7 | import f from "./target" with { t: "json" };
+           8 | import g from "./target.json" with { type: "foo" };
+           9 | import h from "./target" with { type: "foo" };
+          10 | const i = await import("./target.json");
+          11 | const j = await import("./target");
+          12 | const k = await import("./target.json", {});
+          13 | const l = await import("./target", {});
+          14 | const m = await import("./target.json", { with: {type: "json"} });
+          15 | const n = await import("./target", { with: {} });
+          16 | const o = await import("./target.json", { with: { t: "json" } });
+          17 | const p = await import("./target", { with: { t: "json" } });
+          18 | const q = await import("./target.json", { with: { type: "foo" } });
+          19 | const r = await import("./target", { with: { type: "foo" } });
+          20 |
 [14] `{type: "json"}` is required for `*.json` import.
+     Suggestions:
+       - Add `{type: "json"}` attribute to import.
+         Output:
+           1 | /* tests/fixtures/rules/prefer-json-modules/invalid/import-json/src-input.mjs */
+           2 | import a from "./target.json";
+           3 | import b from "./target";
+           4 | import c from "./target.json" with {};
+           5 | import d from "./target" with {};
+           6 | import e from "./target.json" with { t: "json" };
+           7 | import f from "./target" with { t: "json" };
+           8 | import g from "./target.json" with { type: "foo" };
+           9 | import h from "./target" with { type: "foo" };
+          10 | const i = await import("./target.json");
+          11 | const j = await import("./target");
+          12 | const k = await import("./target.json", {});
+          13 | const l = await import("./target", {});
+          14 | const m = await import("./target.json", { with: {} });
+          15 | const n = await import("./target", { with: {type: "json"} });
+          16 | const o = await import("./target.json", { with: { t: "json" } });
+          17 | const p = await import("./target", { with: { t: "json" } });
+          18 | const q = await import("./target.json", { with: { type: "foo" } });
+          19 | const r = await import("./target", { with: { type: "foo" } });
+          20 |
 [15] `{type: "json"}` is required for `*.json` import.
+     Suggestions:
+       - Add `{type: "json"}` attribute to import.
+         Output:
+           1 | /* tests/fixtures/rules/prefer-json-modules/invalid/import-json/src-input.mjs */
+           2 | import a from "./target.json";
+           3 | import b from "./target";
+           4 | import c from "./target.json" with {};
+           5 | import d from "./target" with {};
+           6 | import e from "./target.json" with { t: "json" };
+           7 | import f from "./target" with { t: "json" };
+           8 | import g from "./target.json" with { type: "foo" };
+           9 | import h from "./target" with { type: "foo" };
+          10 | const i = await import("./target.json");
+          11 | const j = await import("./target");
+          12 | const k = await import("./target.json", {});
+          13 | const l = await import("./target", {});
+          14 | const m = await import("./target.json", { with: {} });
+          15 | const n = await import("./target", { with: {} });
+          16 | const o = await import("./target.json", { with: { t: "json", type: "json" } });
+          17 | const p = await import("./target", { with: { t: "json" } });
+          18 | const q = await import("./target.json", { with: { type: "foo" } });
+          19 | const r = await import("./target", { with: { type: "foo" } });
+          20 |
 [16] `{type: "json"}` is required for `*.json` import.
+     Suggestions:
+       - Add `{type: "json"}` attribute to import.
+         Output:
+           1 | /* tests/fixtures/rules/prefer-json-modules/invalid/import-json/src-input.mjs */
+           2 | import a from "./target.json";
+           3 | import b from "./target";
+           4 | import c from "./target.json" with {};
+           5 | import d from "./target" with {};
+           6 | import e from "./target.json" with { t: "json" };
+           7 | import f from "./target" with { t: "json" };
+           8 | import g from "./target.json" with { type: "foo" };
+           9 | import h from "./target" with { type: "foo" };
+          10 | const i = await import("./target.json");
+          11 | const j = await import("./target");
+          12 | const k = await import("./target.json", {});
+          13 | const l = await import("./target", {});
+          14 | const m = await import("./target.json", { with: {} });
+          15 | const n = await import("./target", { with: {} });
+          16 | const o = await import("./target.json", { with: { t: "json" } });
+          17 | const p = await import("./target", { with: { t: "json", type: "json" } });
+          18 | const q = await import("./target.json", { with: { type: "foo" } });
+          19 | const r = await import("./target", { with: { type: "foo" } });
+          20 |
+[17] `{type: "json"}` is required for `*.json` import.
+[18] `{type: "json"}` is required for `*.json` import.
 ---
 
 
@@ -73,6 +401,30 @@ Code:
   5 |
 
 [1] `with {type: "json"}` is required for `*.json` import.
+    Suggestions:
+      - Add `{type: "json"}` attribute to import.
+        Output:
+          1 | /* tests/fixtures/rules/prefer-json-modules/invalid/node-modules/src-input.mjs */
+          2 | import a from "json" with {type: "json"};
+          3 | import b from "json2";
+          4 | import c from "json2/package.json";
+          5 |
 [2] `with {type: "json"}` is required for `*.json` import.
+    Suggestions:
+      - Add `{type: "json"}` attribute to import.
+        Output:
+          1 | /* tests/fixtures/rules/prefer-json-modules/invalid/node-modules/src-input.mjs */
+          2 | import a from "json";
+          3 | import b from "json2" with {type: "json"};
+          4 | import c from "json2/package.json";
+          5 |
 [3] `with {type: "json"}` is required for `*.json` import.
+    Suggestions:
+      - Add `{type: "json"}` attribute to import.
+        Output:
+          1 | /* tests/fixtures/rules/prefer-json-modules/invalid/node-modules/src-input.mjs */
+          2 | import a from "json";
+          3 | import b from "json2";
+          4 | import c from "json2/package.json" with {type: "json"};
+          5 |
 ---

@@ -6,6 +6,7 @@ import {
   defineImportStatementVisitor,
 } from "../utils/node/import-visitor.js";
 import { getStaticValue } from "@eslint-community/eslint-utils";
+import type { Rule } from "eslint";
 
 export default createRule("prefer-json-modules", {
   meta: {
@@ -25,10 +26,12 @@ export default createRule("prefer-json-modules", {
         '`with {type: "json"}` is required for `*.json` import.',
       expectedTypeJsonAttribute:
         '`{type: "json"}` is required for `*.json` import.',
+      addTypeJsonAttribute: 'Add `{type: "json"}` attribute to import.',
     },
     type: "suggestion",
   },
   create(context) {
+    const sourceCode = context.sourceCode;
     return compositingVisitors(
       defineImportStatementVisitor(context, {}, check),
       defineDynamicImportVisitor(context, {}, check),
@@ -87,6 +90,28 @@ export default createRule("prefer-json-modules", {
         context.report({
           node: target.source,
           messageId: "expectedOptionForImportDeclaration",
+          suggest: [
+            {
+              messageId: "addTypeJsonAttribute",
+              fix: (fixer) => {
+                const afterSource = sourceCode.getTokenAfter(target.source);
+                if (
+                  !afterSource ||
+                  afterSource.value === ";" ||
+                  node.range[1] <= afterSource.range[0]
+                ) {
+                  return fixer.insertTextAfter(
+                    target.source,
+                    ' with {type: "json"}',
+                  );
+                }
+                if (afterSource.value !== "with") return null; // unknown syntax
+                const afterWith = sourceCode.getTokenAfter(afterSource);
+                if (!afterWith || afterWith.value !== "{") return null; // unknown syntax
+                return fixer.insertTextAfter(afterWith, 'type: "json"');
+              },
+            },
+          ],
         });
         return;
       }
@@ -105,6 +130,18 @@ export default createRule("prefer-json-modules", {
       context.report({
         node: target.source,
         messageId: "expectedTypeJsonAttribute",
+        suggest: !typeAttribute
+          ? [
+              {
+                messageId: "addTypeJsonAttribute",
+                fix: (fixer: Rule.RuleFixer) =>
+                  fixer.insertTextAfter(
+                    node.attributes[node.attributes.length - 1],
+                    ', type: "json"',
+                  ),
+              },
+            ]
+          : [],
       });
     }
 
@@ -115,22 +152,31 @@ export default createRule("prefer-json-modules", {
       target: ImportTarget<TSESTree.ImportExpression>,
     ) {
       const node = target.node;
-      if (!node.options) {
+      const options = node.options;
+      if (!options) {
         context.report({
           node: target.source,
           messageId: "expectedOptionForImportExpression",
+          suggest: [
+            {
+              messageId: "addTypeJsonAttribute",
+              fix: (fixer) =>
+                fixer.insertTextAfter(
+                  target.source,
+                  ', {with: {type: "json"}}',
+                ),
+            },
+          ],
         });
         return;
       }
       if (
-        node.options.type !== "ObjectExpression" ||
-        !node.options.properties.every(
-          (property) => property.type === "Property",
-        )
+        options.type !== "ObjectExpression" ||
+        !options.properties.every((property) => property.type === "Property")
       )
         return;
 
-      const withProperty = node.options.properties.find(
+      const withProperty = options.properties.find(
         (property): property is TSESTree.Property =>
           property.type === "Property" &&
           property.key.type === "Identifier" &&
@@ -138,8 +184,23 @@ export default createRule("prefer-json-modules", {
       );
       if (!withProperty) {
         context.report({
-          node: node.options,
+          node: options,
           messageId: "expectedWithPropertyForImportExpression",
+          suggest: [
+            {
+              messageId: "addTypeJsonAttribute",
+              fix: (fixer) =>
+                options.properties.length
+                  ? fixer.insertTextAfter(
+                      options.properties[options.properties.length - 1],
+                      ', with: {type: "json"}',
+                    )
+                  : fixer.insertTextAfter(
+                      sourceCode.getFirstToken(options)!,
+                      'with: {type: "json"}',
+                    ),
+            },
+          ],
         });
         return;
       }
@@ -151,7 +212,8 @@ export default createRule("prefer-json-modules", {
       )
         return;
 
-      const typeProperty = withProperty.value.properties.find(
+      const withObject = withProperty.value;
+      const typeProperty = withObject.properties.find(
         (property): property is TSESTree.Property =>
           property.type === "Property" &&
           property.key.type === "Identifier" &&
@@ -159,8 +221,23 @@ export default createRule("prefer-json-modules", {
       );
       if (!typeProperty) {
         context.report({
-          node: withProperty.value,
+          node: withObject,
           messageId: "expectedTypeJsonAttribute",
+          suggest: [
+            {
+              messageId: "addTypeJsonAttribute",
+              fix: (fixer) =>
+                withObject.properties.length
+                  ? fixer.insertTextAfter(
+                      withObject.properties[withObject.properties.length - 1],
+                      ', type: "json"',
+                    )
+                  : fixer.insertTextAfter(
+                      sourceCode.getFirstToken(withObject)!,
+                      'type: "json"',
+                    ),
+            },
+          ],
         });
         return;
       }
