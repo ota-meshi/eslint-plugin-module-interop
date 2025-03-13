@@ -3,7 +3,47 @@ import { ImportTarget, resolveOptions } from "./import-target.js";
 import type { TSESTree } from "@typescript-eslint/types";
 import { stripImportPathParams } from "./strip-import-path-params.js";
 import { isBuiltin } from "node:module";
+import { detectModuleType } from "./detect-module-type.js";
+import path from "node:path";
+import { isTypescript } from "./is-typescript.js";
+import { compositingVisitors } from "../index.js";
 
+/**
+ * Defines the effectively `import` visitor.
+ * `import` in `*.ts` files may actually act as `require()`.
+ * Define a visitor that will only visit actual `import`, excluding `require()`.
+ */
+export function defineEffectivelyImportVisitor(
+  context: Rule.RuleContext,
+  {
+    includeCore = false,
+    ignoreTypeImport = false,
+  }: {
+    includeCore?: boolean;
+    ignoreTypeImport?: boolean;
+  },
+  callback: (targets: ImportTarget[]) => void,
+): Rule.RuleListener {
+  if (isTypescript(context)) {
+    const filename = path.resolve(context.filename);
+    if (path.extname(filename) === ".ts") {
+      const moduleType = detectModuleType(filename);
+      if (moduleType === "cjs") {
+        // If it's a ts file and after transpilation becomes cjs
+        // it won't check any import statements because they will be turned into requires.
+        return defineDynamicImportVisitor(context, { includeCore }, callback);
+      }
+    }
+  }
+  return compositingVisitors(
+    defineImportStatementVisitor(
+      context,
+      { includeCore, ignoreTypeImport },
+      callback,
+    ),
+    defineDynamicImportVisitor(context, { includeCore }, callback),
+  );
+}
 /**
  * Define the import statement visitor.
  */

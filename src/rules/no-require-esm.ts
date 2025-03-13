@@ -1,9 +1,5 @@
-import path from "node:path";
-import { compositingVisitors, createRule } from "../utils/index.js";
-import { detectModuleType } from "../utils/node/detect-module-type.js";
-import { defineRequireVisitor } from "../utils/node/require-visitor.js";
-import { isTypescript } from "../utils/node/is-typescript.js";
-import { defineImportStatementVisitor } from "../utils/node/import-visitor.js";
+import { createRule } from "../utils/index.js";
+import { defineEffectivelyRequireVisitor } from "../utils/node/require-visitor.js";
 import type { ImportTarget } from "../utils/node/import-target.js";
 
 export default createRule("no-require-esm", {
@@ -19,26 +15,7 @@ export default createRule("no-require-esm", {
     type: "suggestion",
   },
   create(context) {
-    const requireVisitor = defineRequireVisitor(context, {}, check);
-    if (!isTypescript(context)) {
-      return requireVisitor;
-    }
-    const filename = path.resolve(context.filename);
-    if (path.extname(filename) !== ".ts") {
-      return requireVisitor;
-    }
-    const moduleType = detectModuleType(filename);
-    if (moduleType !== "cjs") {
-      return requireVisitor;
-    }
-
-    // For `.ts` files, ESM imports may become CJS through transpilation.
-    // We detect whether they will be transpiled and, if so,
-    // check for ESM imports as well.
-    return compositingVisitors(
-      requireVisitor,
-      defineImportStatementVisitor(context, { ignoreTypeImport: true }, check),
-    );
+    return defineEffectivelyRequireVisitor(context, {}, check);
 
     /**
      * Checks for the import targets.
