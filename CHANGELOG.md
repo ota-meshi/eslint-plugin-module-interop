@@ -1,5 +1,11 @@
 # eslint-plugin-module-interop
 
+## 0.3.1
+
+### Patch Changes
+
+- [#27](https://github.com/ota-meshi/eslint-plugin-module-interop/pull/27) [`bcb7ce1`](https://github.com/ota-meshi/eslint-plugin-module-interop/commit/bcb7ce17e601f878ea958336b7ca31bd752d6cb3) Thanks [@ota-meshi](https://github.com/ota-meshi)! - fix: update tsup config
+
 ## 0.3.0
 
 ### Minor Changes
