@@ -7,5 +7,6 @@ export default [
     outDir: "lib",
     entry: ["src/index.ts"],
     format: ["esm"],
+    treeshake: true,
   },
 ] satisfies Options[];
