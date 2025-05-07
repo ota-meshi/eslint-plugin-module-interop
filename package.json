@@ -71,7 +71,7 @@
     "@ota-meshi/eslint-plugin": "^0.17.6",
     "@shikijs/vitepress-twoslash": "^3.0.0",
     "@types/eslint": "^9.6.1",
-    "@types/eslint-scope": "^3.7.7",
+    "@types/eslint-scope": "^8.0.0",
     "@types/eslint-utils": "^3.0.5",
     "@types/estree": "^1.0.6",
     "@types/json-schema": "^7.0.15",
