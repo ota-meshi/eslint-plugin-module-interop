@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es2022",
     "module": "nodenext",
-    "lib": ["es2020", "DOM"],
+    "lib": ["es2022", "DOM"],
     "allowJs": true,
     // "checkJs": true,
     "declaration": true,
