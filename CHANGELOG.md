@@ -1,5 +1,11 @@
 # eslint-plugin-module-interop
 
+## 0.3.2
+
+### Patch Changes
+
+- [#84](https://github.com/ota-meshi/eslint-plugin-module-interop/pull/84) [`18cbfb6`](https://github.com/ota-meshi/eslint-plugin-module-interop/commit/18cbfb6c1a49cf315b6fa6cc641bd04d6e9420ca) Thanks [@renovate](https://github.com/apps/renovate)! - fix: update type declarations for current ESLint versions
+
 ## 0.3.1
 
 ### Patch Changes
