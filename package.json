@@ -69,7 +69,7 @@
     "@changesets/get-release-plan": "^4.0.8",
     "@eslint-community/eslint-plugin-eslint-comments": "^4.7.2",
     "@ota-meshi/eslint-plugin": "^0.20.0",
-    "@shikijs/vitepress-twoslash": "^3.0.0",
+    "@shikijs/vitepress-twoslash": "^4.0.0",
     "@types/eslint": "^9.6.1",
     "@types/eslint-scope": "^8.0.0",
     "@types/estree": "^1.0.6",
