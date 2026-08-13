@@ -94,12 +94,7 @@ export function resolveOptions(
 }
 
 type TargetSourceType =
-  | "unknown"
-  | "relative"
-  | "absolute"
-  | "node"
-  | "npm"
-  | "http";
+  "unknown" | "relative" | "absolute" | "node" | "npm" | "http";
 type TargetModuleStyle = "import" | "require" | "type";
 
 /**

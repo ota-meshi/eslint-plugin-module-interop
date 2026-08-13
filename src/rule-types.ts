@@ -6,12 +6,6 @@
 /* prettier-ignore */
 import type { Linter } from 'eslint'
 
-declare module 'eslint' {
-  namespace Linter {
-    interface RulesRecord extends RuleOptions {}
-  }
-}
-
 export interface RuleOptions {
   /**
    * disallow importing CommonJS modules
