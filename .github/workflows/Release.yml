@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  id-token: write
   issues: write
   pull-requests: write
 
@@ -21,6 +22,8 @@ jobs:
         uses: pnpm/action-setup@v4
       - name: Setup Node.js
         uses: actions/setup-node@v4
+        with:
+          node-version: 24
       - name: Install Dependencies
         run: pnpm install -f
 
@@ -36,4 +39,3 @@ jobs:
           title: "chore: release eslint-plugin-module-interop"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
