@@ -13,11 +13,6 @@
     {
       "matchManagers": ["github-actions", "devcontainer"],
       "automerge": true
-    },
-    {
-      "matchManagers": ["github-actions"],
-      "matchPackageNames": ["changesets/action"],
-      "allowedVersions": "<2"
     }
   ]
 }
