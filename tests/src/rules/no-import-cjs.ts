@@ -4,4 +4,4 @@ import { loadTestCases } from "../../utils/utils.js";
 
 const tester = new SnapshotRuleTester();
 
-tester.run("no-import-cjs", rule as any, await loadTestCases("no-import-cjs"));
+tester.run("no-import-cjs", rule, await loadTestCases("no-import-cjs"));

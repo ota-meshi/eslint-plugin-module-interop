@@ -12,7 +12,10 @@ void main();
 async function main() {
   const { pluginsToRulesDTS } = await import("eslint-typegen/core");
 
-  const ruleTypes = await pluginsToRulesDTS({ "module-interop": plugin });
+  const ruleTypes = await pluginsToRulesDTS(
+    { "module-interop": plugin },
+    { includeAugmentation: false },
+  );
 
   void fs.writeFileSync(
     path.join(dirname, "../src/rule-types.ts"),

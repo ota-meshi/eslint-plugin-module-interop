@@ -56,7 +56,7 @@
   },
   "homepage": "https://ota-meshi.github.io/eslint-plugin-module-interop/",
   "dependencies": {
-    "@eslint-community/eslint-utils": "^4.5.0",
+    "@eslint-community/eslint-utils": "^4.6.0",
     "enhanced-resolve": "^5.18.1",
     "get-tsconfig": "^4.10.0"
   },
@@ -67,12 +67,10 @@
     "@changesets/changelog-github": "^0.5.1",
     "@changesets/cli": "^2.28.1",
     "@changesets/get-release-plan": "^4.0.8",
-    "@eslint/core": "^1.0.0",
     "@ota-meshi/eslint-plugin": "^0.18.0",
     "@shikijs/vitepress-twoslash": "^3.0.0",
     "@types/eslint": "^9.6.1",
     "@types/eslint-scope": "^8.0.0",
-    "@types/eslint-utils": "^3.0.5",
     "@types/estree": "^1.0.6",
     "@types/json-schema": "^7.0.15",
     "@types/mocha": "^10.0.10",
