@@ -110,10 +110,9 @@ function defineImportVisitor<
     | TSESTree.ExportNamedDeclaration
     | TSESTree.ImportDeclaration
     | TSESTree.ImportExpression = K extends "statement"
-    ?
-        | TSESTree.ExportAllDeclaration
-        | TSESTree.ExportNamedDeclaration
-        | TSESTree.ImportDeclaration
+    ? | TSESTree.ExportAllDeclaration
+      | TSESTree.ExportNamedDeclaration
+      | TSESTree.ImportDeclaration
     : TSESTree.ImportExpression,
 >(
   context: Rule.RuleContext,

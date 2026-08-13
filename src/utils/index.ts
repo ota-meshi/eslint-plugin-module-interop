@@ -22,7 +22,7 @@ export function createRule(
       },
     },
     create(context: Rule.RuleContext): any {
-      return rule.create(context as any);
+      return rule.create(context);
     },
   };
 }

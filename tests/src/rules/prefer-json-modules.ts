@@ -6,6 +6,6 @@ const tester = new SnapshotRuleTester();
 
 tester.run(
   "prefer-json-modules",
-  rule as any,
+  rule,
   await loadTestCases("prefer-json-modules"),
 );
