@@ -1,5 +1,11 @@
 # eslint-plugin-module-interop
 
+## 0.4.0
+
+### Minor Changes
+
+- [#115](https://github.com/ota-meshi/eslint-plugin-module-interop/pull/115) [`59d1a58`](https://github.com/ota-meshi/eslint-plugin-module-interop/commit/59d1a58480daa72c55f185aa2194b01311335797) Thanks [@ota-meshi](https://github.com/ota-meshi)! - chore: replace tsup with tsdown
+
 ## 0.3.2
 
 ### Patch Changes
