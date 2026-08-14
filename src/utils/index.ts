@@ -2,6 +2,8 @@
 import type { Rule } from "eslint";
 import type { PartialRuleModule, RuleModule } from "../types.js";
 
+type RuleVisitor = Record<string, ((...args: any[]) => void) | undefined>;
+
 /**
  * Define the rule.
  * @param ruleName ruleName
@@ -33,19 +35,21 @@ export function createRule(
 export function compositingVisitors(
   ...visitors: [Rule.RuleListener, ...Rule.RuleListener[]]
 ): Rule.RuleListener {
-  const result: Rule.RuleListener = {};
-  for (const v of visitors) {
+  const result: RuleVisitor = {};
+  for (const v of visitors as RuleVisitor[]) {
     for (const key in v) {
-      if (result[key]) {
-        const o = result[key];
+      const visitor = v[key];
+      if (!visitor) {
+        continue;
+      }
+      const previous = result[key];
+      if (previous) {
         result[key] = (...args: any[]) => {
-          // @ts-expect-error -- ignore
-          o(...args);
-          // @ts-expect-error -- ignore
-          v[key](...args);
+          previous(...args);
+          visitor(...args);
         };
       } else {
-        result[key] = v[key];
+        result[key] = visitor;
       }
     }
   }
