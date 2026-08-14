@@ -110,6 +110,23 @@ export default [
     },
   },
   {
+    files: ["playground/package.json"],
+    rules: {
+      "jsonc/auto": "off",
+      "jsonc/no-irregular-whitespace": [
+        "error",
+        {
+          skipComments: false,
+          skipJSXText: false,
+          skipRegExps: false,
+          skipStrings: false,
+          skipTemplates: false,
+        },
+      ],
+      "jsonc/no-octal-escape": "error",
+    },
+  },
+  {
     ignores: [
       ".nyc_output/",
       "coverage/",
