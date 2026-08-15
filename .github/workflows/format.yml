@@ -10,16 +10,14 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v7
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v6
       - name: Setup node
         uses: actions/setup-node@v7
+        with:
+          package-manager-cache: false
       - name: Install deps
-        run: pnpm install -f
-      - name: Update deps
-        run: pnpm update -D -f
+        run: npm install
       - name: Format
-        run: pnpm run eslint-fix
+        run: npm run eslint-fix
       - name: Commit
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"

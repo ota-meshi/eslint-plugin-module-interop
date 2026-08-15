@@ -21,7 +21,7 @@ async function main() {
     path.join(dirname, "../src/rule-types.ts"),
     `// IMPORTANT!
 // This file has been automatically generated,
-// in order to update its content execute "pnpm run update"
+// in order to update its content execute "npm run update"
 
 ${ruleTypes}`,
   );

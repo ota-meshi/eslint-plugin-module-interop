@@ -16,25 +16,25 @@
     "node": "^18.18.0||^20.9.0||>=21.1.0"
   },
   "scripts": {
-    "build": "pnpm run build:meta && pnpm run build:tsdown",
-    "build:meta": "pnpm run ts -- ./tools/update-meta.ts",
+    "build": "npm run build:meta && npm run build:tsdown",
+    "build:meta": "npm run ts -- ./tools/update-meta.ts",
     "build:tsdown": "tsdown",
     "lint": "eslint --config ./eslint.config.mjs .",
     "tsc": "tsc --project tsconfig.build.json",
     "eslint-fix": "eslint --config ./eslint.config.mjs . --fix",
-    "test": "pnpm run mocha -- \"tests/src/**/*.ts\" --reporter=dot --timeout=60000",
-    "cover": "c8 --reporter=lcov pnpm run test",
-    "test:update": "pnpm run mocha -- \"tests/src/**/*.ts\" --reporter=dot --update",
-    "update": "pnpm run ts -- ./tools/update.ts && pnpm run eslint-fix",
-    "new": "pnpm run ts -- ./tools/new-rule.ts",
+    "test": "npm run mocha -- \"tests/src/**/*.ts\" --reporter=dot --timeout=60000",
+    "cover": "c8 --reporter=lcov npm run test",
+    "test:update": "npm run mocha -- \"tests/src/**/*.ts\" --reporter=dot --update",
+    "update": "npm run ts -- ./tools/update.ts && npm run eslint-fix",
+    "new": "npm run ts -- ./tools/new-rule.ts",
     "docs:watch": "vitepress dev docs --open",
     "docs:build": "vitepress build docs",
     "ts": "node --import=@oxc-node/core/register",
-    "mocha": "pnpm run ts ./node_modules/mocha/bin/mocha.js",
-    "preversion": "pnpm test && git add .",
-    "version": "env-cmd -e version -- pnpm run update && git add .",
-    "version:ci": "env-cmd -e version-ci -- pnpm run update && changeset version",
-    "prerelease": "pnpm run build",
+    "mocha": "npm run ts -- ./node_modules/mocha/bin/mocha.js",
+    "preversion": "npm test && git add .",
+    "version": "env-cmd -e version -- npm run update && git add .",
+    "version:ci": "env-cmd -e version-ci -- npm run update && changeset version",
+    "prerelease": "npm run build",
     "release": "changeset publish"
   },
   "repository": {
@@ -122,6 +122,5 @@
   },
   "publishConfig": {
     "access": "public"
-  },
-  "packageManager": "pnpm@10.34.5"
+  }
 }

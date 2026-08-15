@@ -13,15 +13,15 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v7
         with:
           node-version: 24
+          package-manager-cache: false
       - name: Install Packages
-        run: pnpm install
+        run: npm install
       - name: Build
-        run: pnpm run build
-      - run: pnpx pkg-pr-new publish --compact '.' --json output.json --comment=off
+        run: npm run build
+      - run: npx --yes pkg-pr-new publish --compact '.' --json output.json --comment=off
       - name: Add metadata to output
         uses: actions/github-script@v9
         with:
