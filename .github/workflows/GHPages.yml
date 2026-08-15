@@ -25,13 +25,14 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
-      - uses: pnpm/action-setup@v6
       - uses: actions/setup-node@v7
+        with:
+          package-manager-cache: false
       - name: Install Packages
-        run: pnpm install -f
+        run: npm install
       - name: Build
         run: |+
-          pnpm run docs:build
+          npm run docs:build
       - name: Setup Pages
         uses: actions/configure-pages@v6
       - name: Upload artifact

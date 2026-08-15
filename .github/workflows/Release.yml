@@ -18,22 +18,21 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v7
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v6
       - name: Setup Node.js
         uses: actions/setup-node@v7
         with:
           node-version: 24
+          package-manager-cache: false
       - name: Install Dependencies
-        run: pnpm install -f
+        run: npm install
 
-      - name: Create Release Pull Request or Publish to pnpm
+      - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v2.1.0
         with:
           # this expects you to have a npm script called version that runs some logic and then calls `changeset version`.
-          version-script: pnpm run version:ci
+          version-script: npm run version:ci
           # This expects you to have a script called release which does a build for your packages and calls changeset publish
-          publish-script: pnpm run release
+          publish-script: npm run release
           commit-message: "chore: release eslint-plugin-module-interop"
           pr-title: "chore: release eslint-plugin-module-interop"
